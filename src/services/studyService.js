@@ -1,5 +1,5 @@
 import http from "../utils/http";
-import { handleApiResponse } from "../utils/apiResponseHandler";
+import { handleApiResponse } from "../utils/api";
 
 //전체 글 조회
 export const fetchStudyPosts = async () => {

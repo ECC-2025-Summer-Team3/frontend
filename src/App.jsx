@@ -4,7 +4,6 @@ import StudyWritePage from "./pages/study/StudyWritePage";
 import StudyDetailPage from "./pages/study/StudyDetailPage";
 
 import './App.css';
-import 'antd/dist/reset.css';
 
 function App() {
   return (
