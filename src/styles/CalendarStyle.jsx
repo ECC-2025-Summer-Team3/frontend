@@ -1,0 +1,62 @@
+import styled, { createGlobalStyle } from "styled-components";
+
+export const GlobalCalendarStyle = createGlobalStyle`
+	:root {
+		--fc-border-color: #fff;
+
+		--fc-button-text-color: #000;
+		--fc-button-bg-color: #fff;
+		--fc-button-border-color: #000;
+		--fc-button-hover-bg-color: #818181;
+
+		--fc-event-bg-color: #ffbf00;
+		--fc-event-text-color: #000;
+		--fc-event-border-color: none;
+	}
+
+    .fc{
+    --fc-border-color:var(--fc-border-color);
+    }
+`;
+
+export const CalendarWrapper = styled.div`
+	.fc-toolbar-title {
+		color: #757575;
+		font-weight: bold;
+		font-size: 25px !important;
+	}
+
+	.fc-button {
+		width: 30px;
+		height: 30px;
+		border-radius: 50% !important;
+		border: 3px solid !important;
+		padding: 0 !important;
+		font-size: 15px !important;
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.fc-daygrid-day-top {
+		position: relative;
+	}
+
+	.fc-daygrid-day-number {
+		font-size: 10px;
+		position: absolute;
+		right: 90%;
+		padding: 0 4px;
+	}
+
+	.fc-day-today {
+		background-color: #fff !important;
+	}
+
+	.fc-day-today .fc-daygrid-day-number {
+		text-decoration: line-through #aeaeae;
+		color: #aeaeae;
+		display: inline-block;
+		position: relative;
+	}
+`;
