@@ -1,12 +1,12 @@
 import "./App.css";
 import React from "react";
 import "antd/dist/reset.css";
-import Home from "./pages/Home.jsx";
+import Login from "./pages/login/Login.jsx";
 
 function App() {
 	return (
 		<div>
-			<Home />
+			<Login />
 		</div>
 	);
 }
