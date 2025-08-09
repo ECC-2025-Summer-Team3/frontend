@@ -13,10 +13,6 @@ export const GlobalCalendarStyle = createGlobalStyle`
 		--fc-event-text-color: #000;
 		--fc-event-border-color: none;
 	}
-
-    .fc{
-    --fc-border-color:var(--fc-border-color);
-    }
 `;
 
 export const CalendarWrapper = styled.div`
@@ -39,14 +35,14 @@ export const CalendarWrapper = styled.div`
 	}
 
 	.fc-daygrid-day-top {
-		position: relative;
+		margin-bottom: 20px;
 	}
 
 	.fc-daygrid-day-number {
 		font-size: 10px;
 		position: absolute;
 		right: 90%;
-		padding: 0 4px;
+		margin: 0 0 0 0;
 	}
 
 	.fc-day-today {
@@ -57,6 +53,27 @@ export const CalendarWrapper = styled.div`
 		text-decoration: line-through #aeaeae;
 		color: #aeaeae;
 		display: inline-block;
-		position: relative;
+	}
+
+	.fc .fc-event {
+		border-radius: 50px;
+		height: 25px;
+	}
+
+	.fc-daygrid-event {
+		display: flex;
+		align-iems: center;
+		justify-content: flex-start;
+		height: 100%;
+	}
+
+	.fc-event-title {
+		font-size: 10px;
+		line-height: 2;
+		padding-left: 15px;
+	}
+
+	.fc-col-header {
+		display: none;
 	}
 `;
