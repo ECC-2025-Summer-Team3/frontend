@@ -56,3 +56,43 @@ export const deleteComment = async (postId, commentId) => {
   const res = await http.delete(`/api/study/${postId}/comments/${commentId}`);
   return handleApiResponse(res);
 };
+
+// 내가 쓴 글 조회
+export const fetchMyPosts = async () => {
+  const res = await http.get("/api/user/my-posts");
+  return handleApiResponse(res);
+};
+
+// 내가 쓴 글 상세 조회
+export const fetchMyPostById = async (postId) => {
+  const res = await http.get(`/api/user/my-posts/${postId}`);
+  return handleApiResponse(res);
+};
+
+// 내가 쓴 글 수정 (PATCH)
+export const updateMyPost = async (postId, payload) => {
+  const res = await http.patch(`/api/user/my-posts/${postId}`, payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+  return handleApiResponse(res);
+};
+
+// 내 댓글 전체 조회
+export const fetchMyComments = async () => {
+  const res = await http.get("/api/user/my-comments"); // ✅ sửa đúng spec
+  return handleApiResponse(res);
+};
+
+// 내가 쓴 댓글 수정
+export const updateMyComment = async (commentId, content) => {
+  const res = await http.patch(`/api/user/my-comments/${commentId}`, { content }, {
+    headers: { "Content-Type": "application/json" }
+  });
+  return handleApiResponse(res);
+};
+
+// 내가 쓴 댓글 삭제
+export const deleteMyComment = async (commentId) => {
+  const res = await http.delete(`/api/user/my-comments/${commentId}`);
+  return handleApiResponse(res);
+};

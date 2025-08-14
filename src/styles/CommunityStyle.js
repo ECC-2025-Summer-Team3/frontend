@@ -1,16 +1,23 @@
-import styled from "styled-components";
-import { media } from "./media";
+import styled, { createGlobalStyle, css } from "styled-components";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/700.css";
+
+/* 커뮤니티 전용 글로벌 스타일 */
+export const CommunityBaseStyle = createGlobalStyle`
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #111;
+  }
+`;
 
 export const PageWrapper = styled.div`
   width: 100%;
-  max-width: ${(props) => props.maxWidth || "800px"};
+  max-width: ${(props) => props.$maxWidth || "800px"};
   margin: 0 auto;
   padding: ${(props) => props.$padding || "2rem"};
-
-  ${media.mobile`
-    max-width: 100%;
-    padding: 1rem 1rem;
-  `}
 `;
 
 export const PrimaryButton = styled.button`
@@ -28,12 +35,6 @@ export const PrimaryButton = styled.button`
   &:hover {
     background-color: #f3f3f3;
   }
-
-  ${media.mobile`
-    font-size: 0.875rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-  `}
 `;
 
 export const FormLabel = styled.label`
@@ -42,46 +43,27 @@ export const FormLabel = styled.label`
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
   text-align: left;
+`;
 
-  ${media.mobile`
-    font-size: 1rem;
-  `}
+const formControl = css`
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #fef5f5;
+  &::placeholder { color: #9ca3af; }
 `;
 
 export const BaseInput = styled.input`
-  width: 100%;
+  ${formControl};
   padding: 0.625rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  font-size: 1rem;
-  background-color: #fef5f5;
-
-  &::placeholder {
-    color: #9ca3af;
-  }
-
-  ${media.mobile`
-    font-size: 0.875rem;
-  `}
 `;
 
 export const BaseTextarea = styled.textarea`
-  width: 100%;
+  ${formControl};
   padding: 0.75rem 1rem;
   height: 160px;
   resize: vertical;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  font-size: 1rem;
-  background-color: #fef5f5;
-
-  &::placeholder {
-    color: #9ca3af;
-  }
-
-  ${media.mobile`
-    font-size: 0.875rem;
-  `}
 `;
 
 export const FlexCenter = styled.div`
@@ -99,37 +81,26 @@ export const Card = styled.div`
   background-color: rgba(217, 217, 217, 0.56);
   border-radius: 15px;
   padding: 1rem;
-  cursor: pointer;
   text-align: left;
-  height: 150px;
+  min-height: ${(p) => p.$minHeight || "150px"};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
-
-  ${media.mobile`
-    padding: 0.75rem;
-    font-size: 0.875rem;
-    border-radius: 12px;
-  `}
+  cursor: ${(p) => (p.$clickable ? "pointer" : "default")};
 `;
 
 export const CardTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: 700;
-  font-family: "Inter", sans-serif;
   color: #000000;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: 0;
-
-  ${media.mobile`
-    font-size: 1rem;
-    line-height: 1.2;
-  `}
+  text-align: left;
 `;
 
 export const CardContent = styled.div`
@@ -137,23 +108,19 @@ export const CardContent = styled.div`
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   font-size: 0.875rem;
-  line-height: 1.7;
+  line-height: 2.2;
   color: #333;
   min-height: calc(14px * 1.6 * 2);
+  text-align: left;
 
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-
+  
   white-space: normal;
   word-break: break-word;
-
-  ${media.mobile`
-    font-size: 0.75rem;
-    padding: 0.5rem;
-  `}
 `;
 
 export const MetaRow = styled.div`
@@ -162,14 +129,39 @@ export const MetaRow = styled.div`
   gap: 0.25rem;
   color: #4b5563;
   font-size: 0.875rem;
-
-  ${media.mobile`
-    font-size: 0.75rem;
-  `}
 `;
 
 export const PostList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+`;
+
+export const AlertBar = styled.div`
+  background: rgba(248, 117, 117, 0.56);
+  color: #6b1e1e;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  position: relative;
+  margin: 0 auto 1rem;
+  max-width: ${(p) => p.$maxWidth || "800px"};
+  text-align: left;
+`;
+
+export const CloseBtn = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+`;
+
+export const Header = styled.h2`
+  text-align: center;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
 `;

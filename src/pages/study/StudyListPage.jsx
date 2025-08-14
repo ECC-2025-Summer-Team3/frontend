@@ -4,6 +4,7 @@ import { fetchStudyPosts } from "../../services/StudyService";
 import PostPreviewCard from "../../components/community/PostPreviewCard";
 import CategoryDropdown from "../../components/community/CategoryDropdown";
 import {
+	CommunityBaseStyle,
 	PageWrapper,
 	FlexCenter,
 	FlexEnd,
@@ -33,31 +34,34 @@ const StudyListPage = () => {
 	);
 
 	return (
-		<PageWrapper $padding="1.5rem">
-			<FlexCenter>
-				<CategoryDropdown
-					selected={selectedCategory}
-					onChange={setSelectedCategory}
-				/>
-			</FlexCenter>
-
-			<FlexEnd>
-				<PrimaryButton $small onClick={() => navigate("/study/write")}>
-					새 글 작성하기
-				</PrimaryButton>
-			</FlexEnd>
-
-			<PostList>
-				{filteredPosts.map((post) => (
-					<PostPreviewCard
-						key={post.postId}
-						title={post.title}
-						content={post.content}
-						onClick={() => navigate(`/study/${post.postId}`)}
+		<>
+			<CommunityBaseStyle />
+			<PageWrapper $padding="1.5rem">
+				<FlexCenter>
+					<CategoryDropdown
+						selected={selectedCategory}
+						onChange={setSelectedCategory}
 					/>
-				))}
-			</PostList>
-		</PageWrapper>
+				</FlexCenter>
+
+				<FlexEnd>
+					<PrimaryButton $small onClick={() => navigate("/study/write")}>
+						새 글 작성하기
+					</PrimaryButton>
+				</FlexEnd>
+
+				<PostList>
+					{filteredPosts.map((post) => (
+						<PostPreviewCard
+							key={post.postId}
+							title={post.title}
+							content={post.content}
+							onClick={() => navigate(`/study/${post.postId}`)}
+						/>
+					))}
+				</PostList>
+			</PageWrapper>
+		</>
 	);
 };
 

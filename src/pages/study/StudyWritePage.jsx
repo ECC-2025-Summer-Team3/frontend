@@ -4,6 +4,7 @@ import styled from "styled-components";
 import CategoryDropdown from "../../components/community/CategoryDropdown";
 import { createStudyPost } from "../../services/StudyService";
 import {
+	CommunityBaseStyle,
 	PageWrapper,
 	FormLabel,
 	BaseInput,
@@ -36,47 +37,46 @@ const StudyWritePage = () => {
 	};
 
 	return (
-		<PageWrapper>
-			<ContentBox>
-				<FormWrapper>
-					{/* 카테고리 */}
-					<FormGroup>
-						<FormLabel>카테고리 선택</FormLabel>
-						<CategoryDropdown
-							selected={category}
-							onChange={setCategory}
-							variant="pink"
-						/>
-					</FormGroup>
+		<>
+			<CommunityBaseStyle />
+			<PageWrapper>
+				<ContentBox>
+					<FormWrapper>
+						<FormGroup>
+							<FormLabel>카테고리 선택</FormLabel>
+							<CategoryDropdown
+								selected={category}
+								onChange={setCategory}
+								variant="pink"
+							/>
+						</FormGroup>
 
-					{/* 제목 */}
-					<FormGroup>
-						<FormLabel>제목</FormLabel>
-						<BaseInput
-							type="text"
-							placeholder="제목을 입력해 주세요."
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-						/>
-					</FormGroup>
+						<FormGroup>
+							<FormLabel>제목</FormLabel>
+							<BaseInput
+								type="text"
+								placeholder="제목을 입력해 주세요."
+								value={title}
+								onChange={(e) => setTitle(e.target.value)}
+							/>
+						</FormGroup>
 
-					{/* 내용 */}
-					<FormGroup>
-						<FormLabel>내용</FormLabel>
-						<BaseTextarea
-							placeholder="내용을 입력해 주세요."
-							value={content}
-							onChange={(e) => setContent(e.target.value)}
-						/>
-					</FormGroup>
-				</FormWrapper>
+						<FormGroup>
+							<FormLabel>내용</FormLabel>
+							<BaseTextarea
+								placeholder="내용을 입력해 주세요."
+								value={content}
+								onChange={(e) => setContent(e.target.value)}
+							/>
+						</FormGroup>
+					</FormWrapper>
 
-				{/* 등록 버튼 */}
-				<ButtonOutsideWrap>
-					<PrimaryButton onClick={handleSubmit}>등록하기</PrimaryButton>
-				</ButtonOutsideWrap>
-			</ContentBox>
-		</PageWrapper>
+					<ButtonOutsideWrap>
+						<PrimaryButton onClick={handleSubmit}>등록하기</PrimaryButton>
+					</ButtonOutsideWrap>
+				</ContentBox>
+			</PageWrapper>
+		</>
 	);
 };
 

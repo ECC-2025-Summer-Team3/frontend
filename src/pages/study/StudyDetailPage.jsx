@@ -4,15 +4,17 @@ import {
 	fetchStudyPostById,
 	fetchComments,
 	createComment,
+	updateComment,
+	deleteComment,
 } from "../../services/StudyService";
 import CommentItem from "../../components/community/CommentItem";
 import {
+	CommunityBaseStyle,
 	PageWrapper,
 	PrimaryButton,
 	BaseInput,
 } from "../../styles/CommunityStyle";
 import styled from "styled-components";
-import { media } from "../../styles/media";
 
 const StudyDetailPage = () => {
 	const { postId } = useParams();
@@ -20,6 +22,10 @@ const StudyDetailPage = () => {
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
+
+	const [editingId, setEditingId] = useState(null);
+	const [draft, setDraft] = useState("");
+	const [saving, setSaving] = useState(false);
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -62,45 +68,127 @@ const StudyDetailPage = () => {
 		);
 	}
 
+	const startEdit = (c) => {
+		if (c.user_id !== currentUserId) return;
+		setEditingId(c.commentId);
+		setDraft(c.content);
+	};
+
+	const cancelEdit = () => {
+		setEditingId(null);
+		setDraft("");
+	};
+
+	const saveEdit = async (commentId) => {
+		const content = draft.trim();
+		if (!content) return;
+		try {
+			setSaving(true);
+			await updateComment(postId, commentId, content);
+			setComments((prev) =>
+				prev.map((c) => (c.commentId === commentId ? { ...c, content } : c)),
+			);
+			cancelEdit();
+		} catch (e) {
+			alert("댓글 수정에 실패했습니다.");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	const removeComment = async (c) => {
+		if (c.user_id !== currentUserId) return;
+		if (!window.confirm("정말 삭제하시겠어요?")) return;
+		try {
+			setSaving(true);
+			await deleteComment(postId, c.commentId);
+			setComments((prev) => prev.filter((x) => x.commentId !== c.commentId));
+			if (editingId === c.commentId) cancelEdit();
+		} catch (e) {
+			alert("댓글 삭제에 실패했습니다.");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	if (isLoading) {
+		return (
+			<PageWrapper>
+				<PostBox>
+					<p>로딩 중...</p>
+				</PostBox>
+			</PageWrapper>
+		);
+	}
+
 	return (
-		<PageWrapper>
-			{/* 글 내용 */}
-			<PostBox>
-				<TitleRow>
-					<PostTitle>{post.title}</PostTitle>
-					<Nickname>글쓴이닉네임</Nickname>
-				</TitleRow>
-				<PostContent>{post.content}</PostContent>
-			</PostBox>
+		<>
+			<CommunityBaseStyle />
+			<PageWrapper>
+				<PostBox>
+					<TitleRow>
+						<PostTitle>{post.title}</PostTitle>
+						<Nickname>글쓴이닉네임</Nickname>
+					</TitleRow>
+					<PostContent>{post.content}</PostContent>
+				</PostBox>
 
-			<Divider />
+				<Divider />
 
-			{/* 댓글 리스트 */}
-			<CommentList>
-				{comments.map((cmt) => (
-					<CommentItem
-						key={cmt.commentId}
-						nickname={cmt.nickname}
-						content={cmt.content}
-						avatarUrl={cmt.avatarUrl}
-						onEdit={() => alert("수정 기능 준비중")}
-						onDelete={() => alert("삭제 기능 준비중")}
-						isMyComment={cmt.user_id === currentUserId}
+				<CommentList>
+					{comments.map((cmt) => {
+						const isMine = cmt.user_id === currentUserId;
+						const isEditing = editingId === cmt.commentId;
+
+						return isEditing ? (
+							<EditItem key={cmt.commentId}>
+								<EditHeader>
+									<strong>{cmt.nickname}</strong>
+								</EditHeader>
+								<textarea
+									rows={3}
+									value={draft}
+									onChange={(e) => setDraft(e.target.value)}
+									placeholder="댓글 내용을 입력하세요"
+								/>
+								<EditActions>
+									<PrimaryButton
+										$small
+										disabled={saving}
+										onClick={() => saveEdit(cmt.commentId)}
+									>
+										저장
+									</PrimaryButton>
+									<PrimaryButton $small disabled={saving} onClick={cancelEdit}>
+										취소
+									</PrimaryButton>
+								</EditActions>
+							</EditItem>
+						) : (
+							<CommentItem
+								key={cmt.commentId}
+								nickname={cmt.nickname}
+								content={cmt.content}
+								avatarUrl={cmt.avatarUrl}
+								onEdit={isMine ? () => startEdit(cmt) : undefined}
+								onDelete={isMine ? () => removeComment(cmt) : undefined}
+								isMyComment={isMine}
+							/>
+						);
+					})}
+				</CommentList>
+
+				<CommentInputBox>
+					<span style={{ marginRight: "0.5rem", fontSize: "1.2rem" }}>💬</span>
+					<StyledInput
+						placeholder="댓글을 입력하세요."
+						value={newComment}
+						onChange={(e) => setNewComment(e.target.value)}
 					/>
-				))}
-			</CommentList>
-
-			{/* 댓글 입력창 */}
-			<CommentInputBox>
-				<span style={{ marginRight: "0.5rem", fontSize: "1.2rem" }}>💬</span>
-				<StyledInput
-					placeholder="댓글을 입력하세요."
-					value={newComment}
-					onChange={(e) => setNewComment(e.target.value)}
-				/>
-				<PrimaryButton onClick={handleCommentSubmit}>등록</PrimaryButton>
-			</CommentInputBox>
-		</PageWrapper>
+					<PrimaryButton onClick={handleCommentSubmit}>등록</PrimaryButton>
+				</CommentInputBox>
+			</PageWrapper>
+		</>
 	);
 };
 
@@ -122,12 +210,6 @@ const TitleRow = styled.div`
 	align-items: baseline;
 	gap: 0.5rem;
 	flex-wrap: wrap;
-
-	${media.tablet`
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  `}
 `;
 
 const PostTitle = styled.h2`
@@ -135,21 +217,11 @@ const PostTitle = styled.h2`
 	font-weight: 800;
 	line-height: 1.4;
 	margin: 0;
-
-	${media.mobile`
-    font-size: 1.25rem;
-    text-align: left;
-  `}
 `;
 
 const Nickname = styled.span`
 	font-size: 1rem;
 	color: #6b7280;
-
-	${media.tablet`
-    align-self: flex-end;
-    font-size: 0.875rem;
-  `}
 `;
 
 const PostContent = styled.div`
@@ -193,4 +265,34 @@ const StyledInput = styled(BaseInput)`
 	background-color: transparent;
 	border: none;
 	padding: 0;
+`;
+
+const EditItem = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 0.75rem 1rem;
+	background: #fff;
+
+	textarea {
+		width: 100%;
+		border: 1px solid #d1d5db;
+		border-radius: 8px;
+		padding: 0.5rem 0.75rem;
+		resize: vertical;
+		background: #fff;
+	}
+`;
+
+const EditHeader = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+`;
+
+const EditActions = styled.div`
+	display: flex;
+	gap: 0.5rem;
 `;
