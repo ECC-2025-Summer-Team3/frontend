@@ -41,7 +41,7 @@ export const CalendarWrapper = styled.div`
 	.fc-daygrid-day-number {
 		font-size: 10px;
 		position: absolute;
-		right: 90%;
+		right: 80%;
 		margin: 0 0 0 0;
 	}
 
@@ -71,6 +71,10 @@ export const CalendarWrapper = styled.div`
 		font-size: 10px;
 		line-height: 2;
 		padding-left: 15px;
+	}
+
+	.fc-event:not(.fc-event-start) .fc-event-title {
+		display: none;
 	}
 
 	.fc-col-header {

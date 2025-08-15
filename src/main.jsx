@@ -1,3 +1,8 @@
+if (import.meta.env.DEV) {
+	const { worker } = await import("./utils/browser");
+	await worker.start();
+}
+
 import { StrictMode } from "react";
 import React from "react";
 import { createRoot } from "react-dom/client";
