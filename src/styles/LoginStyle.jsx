@@ -29,7 +29,7 @@ export const InstText = styled.p`
 	width: 100%;
 	justify-content: flex-start;
 	font-size: 12px;
-	color: rgb(86, 86, 86);
+	color: black;
 	font-size: bold;
 	margin: 0;
 `;
@@ -49,6 +49,22 @@ export const InputText = styled.input`
 		opacity: 1;
 		font-size: 12px;
 	}
+`;
+
+export const OverlapButton = styled(Button)`
+	position: absoulte;
+	height: 35px;
+	margin: 5px 0 5px 8px;
+	border-radius: 5px;
+	color: white;
+	font-size: 12px;
+	background-color: black;
+`;
+
+export const JoinButton = styled(OverlapButton)`
+	height: 40px;
+	font-size: 15px;
+	width: 100px;
 `;
 
 export const Blank = styled.div`
@@ -109,7 +125,12 @@ export const SignButton = styled(Button)`
 	cursor: pointer;
 `;
 
+export const ProfileWrapper = styled.div`
+	display: flex;
+	align-items: end;
+`;
+
 export const UploadButton = styled.div`
-	position: absolute;
+	margin-top: 10px;
 	cursor: pointer;
 `;

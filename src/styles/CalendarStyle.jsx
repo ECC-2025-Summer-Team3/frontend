@@ -16,6 +16,10 @@ export const GlobalCalendarStyle = createGlobalStyle`
 `;
 
 export const CalendarWrapper = styled.div`
+	width: 95%;
+	min-width: 500px;
+	margin: 0 auto;
+
 	.fc-toolbar-title {
 		color: #757575;
 		font-weight: bold;
@@ -35,14 +39,22 @@ export const CalendarWrapper = styled.div`
 	}
 
 	.fc-daygrid-day-top {
-		margin-bottom: 20px;
+		margin-bottom: 0px;
+	}
+
+	.fc .fc-daygrid-day-frame {
+		width: 18px;
+		display: flex;
+		flex-direction: column;
+		align-items: Center;
+		justify-content: center;
+		position: relative;
+		background-color: #aeaeae;
 	}
 
 	.fc-daygrid-day-number {
 		font-size: 10px;
-		position: absolute;
-		right: 80%;
-		margin: 0 0 0 0;
+		margin-bottom: 2px;
 	}
 
 	.fc-day-today {
@@ -58,6 +70,7 @@ export const CalendarWrapper = styled.div`
 	.fc .fc-event {
 		border-radius: 50px;
 		height: 25px;
+		width: 100%;
 	}
 
 	.fc-daygrid-event {
