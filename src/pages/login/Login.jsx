@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import "antd/dist/reset.css";
+import { useNavigate } from "react-router-dom";
 import {
 	PageWrapper,
 	Title,
@@ -23,6 +24,11 @@ function Login() {
 	const [checked, setChecked] = useState(false);
 
 	const isEnabled = Id.trim() !== "" && Pw.trim() !== "";
+
+	const navigate = useNavigate();
+	const handleLogin = () => {
+		navigate("/signin");
+	};
 
 	return (
 		<PageWrapper>
@@ -65,7 +71,7 @@ function Login() {
 			<Divide />
 			<WidthWrapper>
 				<InstText>처음이신가요?</InstText>
-				<SignButton>회원가입</SignButton>
+				<SignButton onClick={handleLogin}>회원가입</SignButton>
 			</WidthWrapper>
 		</PageWrapper>
 	);
