@@ -11,7 +11,6 @@ import MyCommentsPage from "./pages/user/MyCommentsPage";
 import Login from "./pages/login/Login.jsx";
 import Home from "./pages/Home.jsx";
 import SignIn from "./pages/login/SignIn.jsx";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
 	return (
