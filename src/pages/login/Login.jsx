@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import "antd/dist/reset.css";
+import { useNavigate } from "react-router-dom";
 import {
 	PageWrapper,
 	Title,
@@ -16,14 +17,46 @@ import {
 	Divide,
 	SignButton,
 } from "../../styles/LoginStyle";
+import axios from "axios";
 
 function Login() {
 	const [Id, setId] = useState("");
 	const [Pw, setPw] = useState("");
+	const [msg, setMsg] = useState("");
 	const [checked, setChecked] = useState(false);
 
 	const isEnabled = Id.trim() !== "" && Pw.trim() !== "";
 
+	const navigate = useNavigate();
+	const handleLogin = () => {
+		navigate("/signup");
+	};
+
+	const login = async () => {
+		try {
+			const response = await axios.post(
+				"http://localhost:8080/api/auth/login",
+				{
+					Id,
+					Pw,
+				},
+			);
+
+			if (response.data.status === "success") {
+				localStorage.setItem("accessToken", response.data.accessToken);
+				localStorage.setItem("refreshToken", response.data.refreshToken);
+
+				setMsg("로그인 성공!");
+			}
+		} catch (error) {
+			if (error.response) {
+				setMsg(error.response.data.message);
+			} else {
+				setMsg("서버 연결 오류");
+			}
+		}
+	};
+	
 	return (
 		<PageWrapper>
 			<Title>Certif</Title>
@@ -45,7 +78,7 @@ function Login() {
 				onChange={(e) => setPw(e.target.value)}
 			></InputText>
 			<Blank />
-			<LoginButton type="submit" disabled={!isEnabled}>
+			<LoginButton type="submit" disabled={!isEnabled} onClick={login}>
 				로그인
 			</LoginButton>
 			<Blank />
@@ -65,7 +98,7 @@ function Login() {
 			<Divide />
 			<WidthWrapper>
 				<InstText>처음이신가요?</InstText>
-				<SignButton>회원가입</SignButton>
+				<SignButton onClick={handleLogin}>회원가입</SignButton>
 			</WidthWrapper>
 		</PageWrapper>
 	);
