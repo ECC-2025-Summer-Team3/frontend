@@ -14,8 +14,16 @@ import {
 import { useState } from "react";
 import { Avatar, Upload } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import { useEffect } from "react";
 
 function SignIn() {
+	useEffect(() => {
+		fetch("http://localhost:8080/api/auth/signup")
+			.then((res) => res.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.error(err));
+	}, []);
+
 	const [img, setImg] = useState(null);
 
 	const getBase64 = (file, callback) => {

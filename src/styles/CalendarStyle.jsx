@@ -16,9 +16,15 @@ export const GlobalCalendarStyle = createGlobalStyle`
 `;
 
 export const CalendarWrapper = styled.div`
-	width: 95%;
+	width: 100%;
 	min-width: 500px;
+	max-width: none;
 	margin: 0 auto;
+
+	.fc-header-toolbar {
+		display: flex;
+		justify-content: space-between;
+	}
 
 	.fc-toolbar-title {
 		color: #757575;
@@ -38,18 +44,20 @@ export const CalendarWrapper = styled.div`
 		justify-content: center;
 	}
 
+	.fc-daygrid {
+		width: 100%;
+	}
+
 	.fc-daygrid-day-top {
 		margin-bottom: 0px;
 	}
 
 	.fc .fc-daygrid-day-frame {
-		width: 18px;
 		display: flex;
 		flex-direction: column;
 		align-items: Center;
 		justify-content: center;
 		position: relative;
-		background-color: #aeaeae;
 	}
 
 	.fc-daygrid-day-number {
@@ -68,9 +76,19 @@ export const CalendarWrapper = styled.div`
 	}
 
 	.fc .fc-event {
-		border-radius: 50px;
 		height: 25px;
 		width: 100%;
+		border-radius: 0 !important;
+	}
+
+	.fc-event.fc-event-start {
+		border-top-left-radius: 30px !important;
+		border-bottom-left-radius: 30px !important;
+	}
+
+	.fc-event.fc-event-end {
+		border-top-right-radius: 30px !important;
+		border-bottom-right-radius: 30px !important;
 	}
 
 	.fc-daygrid-event {

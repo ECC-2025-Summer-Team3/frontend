@@ -2,21 +2,11 @@ import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { CalendarWrapper } from "../styles/CalendarStyle.jsx";
-import { useEffect, useState } from "react";
 
 const Calendar = () => {
-	const [events, setEvents] = useState([]);
-
-	useEffect(() => {
-		fetch("/api/calendar")
-			.then((res) => res.json())
-			.then((data) => {
-				console.log("Calendar fetch data:", data);
-				const arr = Array.isArray(data) ? data : [data];
-				setEvents(arr);
-			})
-			.catch(console.error);
-	}, []);
+	const events = [
+		{ title: "시험접수", start: "2025-08-01", end: "2025-08-13" },
+	];
 
 	return (
 		<CalendarWrapper>

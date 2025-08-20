@@ -6,7 +6,7 @@ export const handlers = [
 			{
 				title: "시험접수",
 				start: "2025-08-01",
-				end: "2025-08-11",
+				end: "2025-08-12",
 			},
 			{
 				title: "수험표출력",

@@ -10,7 +10,8 @@ import MyPostEditPage from "./pages/user/MyPostEditPage";
 import MyCommentsPage from "./pages/user/MyCommentsPage";
 import Login from "./pages/login/Login.jsx";
 import Home from "./pages/Home.jsx";
-import SignIn from "./pages/login/SignIn.jsx";
+import SignUp from "./pages/login/SignUp.jsx";
+import CertifiInfo from "./pages/CertifiInfo.jsx";
 
 function App() {
 	return (
@@ -18,7 +19,8 @@ function App() {
 			<Routes>
 				<Route path="/home" element={<Home />} />
 				<Route path="/login" element={<Login />} />
-				<Route path="/signin" element={<SignIn />} />
+				<Route path="/signup" element={<SignUp />} />
+				<Route path="/certifiinfo" element={<CertifiInfo />} />
 				<Route path="/study" element={<StudyListPage />} />
 				<Route path="/study/write" element={<StudyWritePage />} />
 				<Route path="/study/:postId" element={<StudyDetailPage />} />
