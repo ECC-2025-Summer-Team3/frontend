@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
 	fetchStudyPostById,
-	fetchComments,
-	createComment,
-	updateComment,
-	deleteComment,
+	fetchStudyComments,
+	createStudyComment,
+	updateStudyComment,
+	deleteStudyComment,
 } from "../../services/StudyService";
+import { fetchMyPage } from "../../services/UserService";
 import CommentItem from "../../components/community/CommentItem";
 import {
 	CommunityBaseStyle,
@@ -18,6 +19,8 @@ import styled from "styled-components";
 
 const StudyDetailPage = () => {
 	const { postId } = useParams();
+	const id = Number(postId);
+
 	const [post, setPost] = useState(null);
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState("");
@@ -27,49 +30,47 @@ const StudyDetailPage = () => {
 	const [draft, setDraft] = useState("");
 	const [saving, setSaving] = useState(false);
 
+  const [currentUserId, setCurrentUserId] = useState(null); 
+
+
 	useEffect(() => {
 		const loadData = async () => {
 			setIsLoading(true);
 			try {
-				const resPost = await fetchStudyPostById(postId);
+         // 현재 로그인 유저 id 가져오기
+        const me = await fetchMyPage();
+        setCurrentUserId(Number(me.id));
+
+        // 게시글 + 댓글 조회
+				const resPost = await fetchStudyPostById(id);
+				const resComments = await fetchStudyComments(id);
 				setPost(resPost);
-				const resComments = await fetchComments(postId);
 				setComments(resComments);
 			} catch (error) {
+				console.error(error);
 				alert("해당 글을 불러오지 못했습니다.");
+			} finally {
+				setIsLoading(false);
 			}
-			setIsLoading(false);
 		};
-
 		loadData();
-	}, [postId]);
+	}, [id]);
 
 	const handleCommentSubmit = async () => {
 		if (!newComment.trim()) return;
 		try {
-			await createComment(postId, { user_id: 1, content: newComment });
-			const res = await fetchComments(postId);
+			await createStudyComment(id, { content: newComment });
+			const res = await fetchStudyComments(id);
 			setComments(res);
 			setNewComment("");
 		} catch (error) {
+			console.error(error);
 			alert("댓글 등록에 실패했습니다.");
 		}
 	};
 
-	const currentUserId = Number(localStorage.getItem("userId")) || 1;
-
-	if (isLoading) {
-		return (
-			<PageWrapper>
-				<PostBox>
-					<p>로딩 중...</p>
-				</PostBox>
-			</PageWrapper>
-		);
-	}
-
 	const startEdit = (c) => {
-		if (c.user_id !== currentUserId) return;
+		if (Number(c.userId) !== Number(currentUserId)) return; // 내 댓글만 수정
 		setEditingId(c.commentId);
 		setDraft(c.content);
 	};
@@ -84,12 +85,15 @@ const StudyDetailPage = () => {
 		if (!content) return;
 		try {
 			setSaving(true);
-			await updateComment(postId, commentId, content);
+			await updateStudyComment(commentId, { content });
 			setComments((prev) =>
-				prev.map((c) => (c.commentId === commentId ? { ...c, content } : c)),
+				prev.map((c) =>
+					Number(c.commentId) === Number(commentId) ? { ...c, content } : c,
+				),
 			);
 			cancelEdit();
 		} catch (e) {
+			console.error(e);
 			alert("댓글 수정에 실패했습니다.");
 		} finally {
 			setSaving(false);
@@ -97,14 +101,17 @@ const StudyDetailPage = () => {
 	};
 
 	const removeComment = async (c) => {
-		if (c.user_id !== currentUserId) return;
+		if (Number(c.userId) !== Number(currentUserId)) return; // 내 댓글만 삭제
 		if (!window.confirm("정말 삭제하시겠어요?")) return;
 		try {
 			setSaving(true);
-			await deleteComment(postId, c.commentId);
-			setComments((prev) => prev.filter((x) => x.commentId !== c.commentId));
+			await deleteStudyComment(c.commentId);
+			setComments((prev) =>
+				prev.filter((x) => Number(x.commentId) !== Number(c.commentId)),
+			);
 			if (editingId === c.commentId) cancelEdit();
 		} catch (e) {
+			console.error(e);
 			alert("댓글 삭제에 실패했습니다.");
 		} finally {
 			setSaving(false);
@@ -127,23 +134,23 @@ const StudyDetailPage = () => {
 			<PageWrapper>
 				<PostBox>
 					<TitleRow>
-						<PostTitle>{post.title}</PostTitle>
-						<Nickname>글쓴이닉네임</Nickname>
+						<PostTitle>{post?.title}</PostTitle>
+						<Nickname>{post?.user?.nickname ?? "익명"}</Nickname>
 					</TitleRow>
-					<PostContent>{post.content}</PostContent>
+					<PostContent>{post?.content}</PostContent>
 				</PostBox>
 
 				<Divider />
 
 				<CommentList>
 					{comments.map((cmt) => {
-						const isMine = cmt.user_id === currentUserId;
-						const isEditing = editingId === cmt.commentId;
+						const isMine = Number(cmt.userId) === Number(currentUserId);
+						const isEditing = editingId === Number(cmt.commentId);
 
 						return isEditing ? (
 							<EditItem key={cmt.commentId}>
 								<EditHeader>
-									<strong>{cmt.nickname}</strong>
+									<strong>{cmt.nickname ?? "익명"}</strong>
 								</EditHeader>
 								<textarea
 									rows={3}
@@ -167,9 +174,9 @@ const StudyDetailPage = () => {
 						) : (
 							<CommentItem
 								key={cmt.commentId}
-								nickname={cmt.nickname}
+								nickname={cmt.nickname ?? "익명"}
 								content={cmt.content}
-								avatarUrl={cmt.avatarUrl}
+								avatarUrl={cmt.profile_image}
 								onEdit={isMine ? () => startEdit(cmt) : undefined}
 								onDelete={isMine ? () => removeComment(cmt) : undefined}
 								isMyComment={isMine}
@@ -210,6 +217,7 @@ const TitleRow = styled.div`
 	align-items: baseline;
 	gap: 0.5rem;
 	flex-wrap: wrap;
+  text-align: left;
 `;
 
 const PostTitle = styled.h2`

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { fetchMyPosts, deleteStudyPost } from "../../services/StudyService";
+import { fetchUserPosts, deleteUserPost } from "../../services/UserService";
 import {
 	PageWrapper,
 	PrimaryButton,
@@ -22,7 +22,7 @@ const MyPostsPage = () => {
 	useEffect(() => {
 		const loadPosts = async () => {
 			try {
-				const data = await fetchMyPosts();
+				const data = await fetchUserPosts();
 				setPosts(data);
 			} catch {
 				alert("내가 작성한 글을 불러오지 못했습니다.");
@@ -33,11 +33,11 @@ const MyPostsPage = () => {
 		loadPosts();
 	}, []);
 
-	const handleDelete = async (postId) => {
+	const handleDelete = async (item) => {
 		if (!window.confirm("정말 삭제하시겠어요?")) return;
 		try {
-			await deleteStudyPost(postId);
-			setPosts((prev) => prev.filter((p) => p.postId !== postId));
+			await deleteUserPost(item.type, item.id);
+			setPosts((prev) => prev.filter((p) => p.id !== item.id));
 			setToast("삭제가 완료되었습니다");
 			setTimeout(() => setToast(""), 3000);
 		} catch {
@@ -62,17 +62,17 @@ const MyPostsPage = () => {
 			) : (
 				<List>
 					{posts.map((p) => (
-						<Item key={p.postId}>
-							<PostTitle>{p.title}</PostTitle>
-							<CardContent>{p.content}</CardContent>
+						<Item key={p.id}>
+							<PostTitle>{p.title ?? String(p)}</PostTitle>
+							{"content" in p && <CardContent>{p.content}</CardContent>}
 							<ButtonRow>
 								<PrimaryButton
 									$small
-									onClick={() => navigate(`/user/my-posts/${p.postId}/edit`)}
+									onClick={() => navigate(`/user/my-posts/${p.type}/${p.id}`)}
 								>
 									수정
 								</PrimaryButton>
-								<PrimaryButton $small onClick={() => handleDelete(p.postId)}>
+								<PrimaryButton $small onClick={() => handleDelete(p)}>
 									삭제
 								</PrimaryButton>
 							</ButtonRow>

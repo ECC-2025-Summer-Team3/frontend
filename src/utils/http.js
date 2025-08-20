@@ -1,23 +1,16 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: "", 
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: false,
+  baseURL: "http://3.34.223.76:8080",         
+  headers: { "Content-Type": "application/json" },
 });
 
+http.defaults.withCredentials = true;
 
-http.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+const token = localStorage.getItem("token") ?? false;
+
+http.defaults.headers.common["Authorization"] = token
+  ? `Bearer ${token}`
+  : null;
 
 export default http;
