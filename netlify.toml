@@ -1,0 +1,13 @@
+#Mixed Content 에러 (https에서 http 요청)
+
+[[redirects]]
+from = "/api/*"
+to = "http://3.34.223.76:8080/:splat"
+status = 200
+force = true
+
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
