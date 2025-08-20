@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import "antd/dist/reset.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import StudyListPage from "./pages/study/StudyListPage";
 import StudyWritePage from "./pages/study/StudyWritePage";
 import StudyDetailPage from "./pages/study/StudyDetailPage";
