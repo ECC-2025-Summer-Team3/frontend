@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import Calendar from "../components/Calendar.jsx";
 import { GlobalCalendarStyle } from "../styles/CalendarStyle.jsx";
 import {
@@ -9,10 +10,12 @@ import {
 } from "../styles/HomeStyle.jsx";
 
 function Home() {
+	const [value, setValue] = useState("");
+
 	return (
 		<PageWrapper>
 			<SearchWrapper>
-				<Search />
+				<Search value={value} onChange={(e) => setValue(e.target.value)} />
 			</SearchWrapper>
 			<CalendarWrapper>
 				<GlobalCalendarStyle />

@@ -5,7 +5,7 @@ import { CalendarWrapper } from "../styles/CalendarStyle.jsx";
 
 const Calendar = () => {
 	const events = [
-		{ title: "시험접수", start: "2025-08-02", end: "2025-08-05" },
+		{ title: "시험접수", start: "2025-08-01", end: "2025-08-13" },
 	];
 
 	return (

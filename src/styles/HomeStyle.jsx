@@ -16,8 +16,9 @@ export const SearchWrapper = styled.div`
 `;
 
 export const CalendarWrapper = styled.div`
-	width: 80%;
+	width: 95%;
 	align-items: center;
+	justify-content: center;
 `;
 
 const SearchBar = styled.div`

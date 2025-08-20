@@ -9,14 +9,17 @@ import MyPostsPage from "./pages/user/MyPostsPage";
 import MyPostEditPage from "./pages/user/MyPostEditPage";
 import Login from "./pages/login/Login.jsx";
 import Home from "./pages/Home.jsx";
+import SignUp from "./pages/login/SignUp.jsx";
+import CertifiInfo from "./pages/CertifiInfo.jsx";
 
 function App() {
 	return (
 		<Router>
 			<Routes>
 				<Route path="/home" element={<Home />} />
-				<Route path="/Login" element={<Login />} />
-
+				<Route path="/login" element={<Login />} />
+				<Route path="/signup" element={<SignUp />} />
+				<Route path="/certifiinfo" element={<CertifiInfo />} />
 				{/* Study */}
 				<Route path="/study">
 					<Route index element={<StudyWritePage />} />
@@ -24,7 +27,6 @@ function App() {
 					<Route path="category/:categoryId" element={<StudyListPage />} />
 					<Route path=":postId" element={<StudyDetailPage />} />
 				</Route>
-
 				{/* User */}
 				<Route path="/user/my-posts" element={<MyPostsPage />} />
 				<Route
