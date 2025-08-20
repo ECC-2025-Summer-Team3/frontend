@@ -11,14 +11,18 @@ import Login from "./pages/login/Login.jsx";
 import Home from "./pages/Home.jsx";
 import SignUp from "./pages/login/SignUp.jsx";
 import CertifiInfo from "./pages/CertifiInfo.jsx";
+import Header from "./components/Header.jsx";
 
 function App() {
 	return (
 		<Router>
 			<Routes>
-				{/* 기본 라우팅 - 배포 테스트 용 */}
-				<Route path="/" element={<Navigate to="/home" replace />} /> 
 				
+				{/* 기본 라우팅 - 배포 테스트 용 */}
+				<Route path="/" element={<Navigate to="/header" replace />} /> 
+				
+				<Route path="/header" element={<Header />} />
+
 				<Route path="/home" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<SignUp />} />
