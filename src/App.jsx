@@ -16,6 +16,9 @@ function App() {
 	return (
 		<Router>
 			<Routes>
+				{/* 기본 라우팅 - 배포 테스트 용 */}
+				<Route path="/" element={<Navigate to="/home" replace />} /> 
+				
 				<Route path="/home" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<SignUp />} />
