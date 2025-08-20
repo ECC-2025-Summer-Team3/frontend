@@ -1,29 +1,52 @@
-import { useState } from "react";
+/* eslint-disable react/prop-types */
+import React, { useState, useMemo } from "react";
 import styled, { css } from "styled-components";
-import { CATEGORY_LIST } from "../../constants/categories.js";
 
-const CategoryDropdown = ({ selected, onChange, variant = "default" }) => {
+const CategoryDropdown = ({
+	options = [],
+	selected,
+	onChange,
+	variant = "default",
+}) => {
+
 	const [open, setOpen] = useState(false);
+
+	const current = useMemo(() => {
+		if (!selected) return options[0] || null;
+		if (typeof selected === "object") return selected;
+		return (
+			options.find((o) => Number(o.id) === Number(selected)) ||
+			options[0] ||
+			null
+		);
+	}, [selected, options]);
+
+	
+	const getLabel = (obj) => {
+		if (!obj) return "";
+		return obj.name ?? obj.categoryName ?? obj.label ?? "";
+	};
+	
 
 	return (
 		<DropdownContainer>
-			<DropdownButton $variant={variant} onClick={() => setOpen(!open)}>
+			<DropdownButton $variant={variant} onClick={() => setOpen((v) => !v)}>
 				<Arrow>▼</Arrow>
-				<SelectedText>{selected}</SelectedText>
+				<SelectedText>{getLabel(current)}</SelectedText>
 			</DropdownButton>
 
 			{open && (
 				<DropdownList $variant={variant}>
-					{CATEGORY_LIST.map((cat) => (
+					{options.map((opt) => (
 						<DropdownItem
-							key={cat}
+							key={opt.id}
 							$variant={variant}
 							onClick={() => {
-								onChange(cat);
+								onChange(opt);
 								setOpen(false);
 							}}
 						>
-							{cat}
+							{opt.categoryName}
 						</DropdownItem>
 					))}
 				</DropdownList>
@@ -33,7 +56,6 @@ const CategoryDropdown = ({ selected, onChange, variant = "default" }) => {
 };
 
 export default CategoryDropdown;
-
 const DropdownContainer = styled.div`
 	position: relative;
 	width: 100%;

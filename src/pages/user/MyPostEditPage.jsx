@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import CategoryDropdown from "../../components/community/CategoryDropdown";
-import { fetchMyPostById, updateMyPost } from "../../services/StudyService";
+import { fetchUserPostById, updateUserPost } from "../../services/UserService";
+import { fetchCategoryById } from "../../services/CategoryService";
+import { fetchStudyPostById } from "../../services/StudyService";
+import { fetchSharePostById } from "../../services/ShareService";
 import {
 	PageWrapper,
 	FormLabel,
@@ -11,46 +13,60 @@ import {
 	PrimaryButton,
 } from "../../styles/CommunityStyle";
 
-const StudyEditPage = () => {
-	const { postId } = useParams();
-	const [loading, setLoading] = useState(true);
-	const [saving, setSaving] = useState(false);
+const MyPostEditPage = () => {
+	const { type, postId } = useParams();
 	const navigate = useNavigate();
 
-	const [category, setCategory] = useState("IT/정보통신");
+	const [loading, setLoading] = useState(true);
+	const [saving, setSaving] = useState(false);
+
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
+	const [categoryName, setCategoryName] = useState("");
 
 	useEffect(() => {
-		const load = async () => {
+		(async () => {
 			try {
-				const data = await fetchMyPostById(postId);
-				setTitle(data.title ?? "");
-				setContent(data.content ?? "");
-				if (data.category) setCategory(data.category);
+				setLoading(true);
+
+				const my = await fetchUserPostById(type, postId);
+				setTitle(my?.title ?? "");
+				setContent(my?.content ?? "");
+
+				let detail = null;
+				if (type === "study") detail = await fetchStudyPostById(postId);
+				if (type === "share") detail = await fetchSharePostById(postId);
+
+				const name = detail?.categoryName || detail?.category;
+				if (name) {
+					setCategoryName(name);
+				} else if (detail?.categoryId != null) {
+					const cat = await fetchCategoryById(detail.categoryId);
+					setCategoryName(cat?.categoryName ?? "");
+				} else {
+					setCategoryName("");
+				}
 			} catch (e) {
+				console.error(e);
 				alert("글 정보를 불러오지 못했습니다.");
 				navigate(-1);
 			} finally {
 				setLoading(false);
 			}
-		};
-		load();
-	}, [postId, navigate]);
+		})();
+	}, [type, postId, navigate]);
 
 	const handleSubmit = async () => {
-		if (!title.trim() || !content.trim()) {
-			alert("제목과 내용을 입력해 주세요!");
-			return;
-		}
+		const t = title.trim();
+		const c = content.trim();
+		if (!t || !c) return alert("제목과 내용을 입력해 주세요!");
 		setSaving(true);
 		try {
-			const payload = { title, content };
-			await updateMyPost(postId, payload);
+			await updateUserPost(type, postId, { title: t, content: c });
 			navigate("/user/my-posts", { state: { updated: true } });
 		} catch (e) {
 			console.error(e);
-			alert(e.message || "글 수정에 실패했습니다.");
+			alert("글 수정에 실패했습니다.");
 		} finally {
 			setSaving(false);
 		}
@@ -63,33 +79,24 @@ const StudyEditPage = () => {
 			<ContentBox>
 				<FormWrapper>
 					<FormGroup>
-						<FormLabel>카테고리 선택</FormLabel>
-						<CategoryDropdown
-							selected={category}
-							onChange={setCategory}
-							variant="pink"
-						/>
+						<FormLabel>카테고리</FormLabel>
+						<ReadOnlyBox>{categoryName || "—"}</ReadOnlyBox>
 					</FormGroup>
 
-					{/* 제목 */}
 					<FormGroup>
 						<FormLabel>제목</FormLabel>
 						<BaseInput
-							type="text"
-							placeholder="원래 제목"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 						/>
 					</FormGroup>
 
-					{/* 내용 */}
 					<FormGroup>
 						<FormLabel>내용</FormLabel>
 						<BaseTextarea
-							placeholder="원래 내용"
+							rows={10}
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
-							rows={10}
 						/>
 					</FormGroup>
 				</FormWrapper>
@@ -104,25 +111,35 @@ const StudyEditPage = () => {
 	);
 };
 
-export default StudyEditPage;
+export default MyPostEditPage;
 
 const ContentBox = styled.div`
 	width: 100%;
 	max-width: 768px;
 `;
-
 const FormWrapper = styled.div`
-	background-color: #f3f4f6;
+	background: #f3f4f6;
 	border-radius: 16px;
 	padding: 2rem;
 `;
-
 const FormGroup = styled.div`
 	margin-bottom: 1.5rem;
 `;
-
 const ButtonOutsideWrap = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	margin-top: 1rem;
+`;
+const ReadOnlyBox = styled.div`
+  background-color: rgba(254, 245, 245, 1);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000;
+
+  padding: 8px 12px;    
+  text-align: center;
+  max-width: 340px;
 `;
