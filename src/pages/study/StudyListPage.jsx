@@ -48,7 +48,7 @@ const StudyListPage = () => {
 				const cats = rawArr
 					.map((c) => ({
 						id: Number(c.categoryId),
-						name: c.categoryName,
+						categoryName: c.categoryName,
 					}))
 					.sort((a, b) => a.id - b.id);
 				setCategories(cats);
@@ -115,6 +115,7 @@ const StudyListPage = () => {
 						새 글 작성하기
 					</PrimaryButton>
 				</FlexEnd>
+
 
 				{loading ? (
 					<p style={{ textAlign: "center", marginTop: "1rem" }}>

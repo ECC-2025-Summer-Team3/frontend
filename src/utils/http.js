@@ -14,5 +14,17 @@ export const setAuthToken = (token) => {
 		delete http.defaults.headers.common["Authorization"];
 	}
 };
+//인터셉터
+http.interceptors.request.use((config) => {
+	// admin test할때 토큰 여기에 넣음
+	const devToken = ""; // admin token 여기에 넣기
+	const token = devToken || localStorage.getItem("token");
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	} else {
+		delete config.headers.Authorization;
+	}
+	return config;
+});
 
 export default http;
