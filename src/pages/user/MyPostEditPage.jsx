@@ -37,7 +37,7 @@ const MyPostEditPage = () => {
 				if (type === "study") detail = await fetchStudyPostById(postId);
 				if (type === "share") detail = await fetchSharePostById(postId);
 
-				const name = detail?.categoryName || detail?.category;
+				const name = detail.categoryName;
 				if (name) {
 					setCategoryName(name);
 				} else if (detail?.categoryId != null) {
