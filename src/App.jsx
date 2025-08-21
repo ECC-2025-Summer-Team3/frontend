@@ -1,12 +1,7 @@
 import React from "react";
 import "./App.css";
 import "antd/dist/reset.css";
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.jsx";
 import AuthLayout from "./layouts/AuthLayout.jsx";
 import StudyListPage from "./pages/study/StudyListPage";
@@ -27,9 +22,6 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-				{/* 기본 라우팅 - 배포 테스트 용 */}
-				<Route path="/" element={<Navigate to="/home" replace />} />
-
 
 				{/* AuthLayout: 헤더 없는 페이지 */}
 				<Route element={<AuthLayout />}>

@@ -174,6 +174,8 @@ const Logo = styled.div`
 	font-family: "Inter", sans-serif;
 	font-size: clamp(2rem, 3vw, 2.5rem);
 	transition: font-size 0.5s ease;
+	font-size: clamp(2rem, 3vw, 2.5rem);
+	transition: font-size 0.5s ease;
 	font-weight: 700;
 	color: #000;
 	cursor: pointer;
@@ -187,9 +189,11 @@ const Nav = styled.nav`
 	gap: clamp(16px, 5vw, 50px);
 	z-index: 40;
 	white-space: nowrap;
+	white-space: nowrap;
 `;
 
 const NavItem = styled(Link)`
+	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
 	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
 	font-weight: 600;
 	padding: 8px 14px;
@@ -197,6 +201,7 @@ const NavItem = styled(Link)`
 	text-decoration: none;
 	color: #111;
 	background: ${({ $active }) => ($active ? "#e5e5e5" : "transparent")};
+	transition: font-size 0.2s ease;
 	transition: font-size 0.2s ease;
 	&:hover {
 		background: #f3f3f3;
