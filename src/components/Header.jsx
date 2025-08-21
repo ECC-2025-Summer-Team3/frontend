@@ -6,7 +6,6 @@ import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import { UsergroupDeleteOutlined } from "@ant-design/icons";
 
-
 const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -55,8 +54,8 @@ const Header = () => {
 
 	// 라우팅 다시 확인!
 	const menu = [
-		{ path: "/home", label: "시험 일정" },
-		{ path: "/certifiinfo", label: "자격증", isOpen: true },
+		{ path: "/", label: "시험 일정" }, //Route 다시 확인
+		{ path: "/certifiinfo", label: "자격증", isOpen: true }, //Route 다시 확인
 		{ path: "/study/default", label: "스터디 모집" },
 		{ path: "/share/default", label: "공유마당" },
 		{ path: "/mypage", label: "마이 페이지" },
@@ -273,12 +272,12 @@ const CatLabel = styled.div`
 `;
 
 const ItemsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px 28px;    
-  padding: 0 24px;    
-  justify-items: start;  
-  align-items: start;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 12px 28px;
+	padding: 0 24px;
+	justify-items: start;
+	align-items: start;
 `;
 
 const Col = styled.div`

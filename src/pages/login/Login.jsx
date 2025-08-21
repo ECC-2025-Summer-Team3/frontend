@@ -17,46 +17,37 @@ import {
 	Divide,
 	SignButton,
 } from "../../styles/LoginStyle";
-import axios from "axios";
+import { loginUser } from "../../services/AuthService";
+import { setAuthToken } from "../../utils/http";
 
 function Login() {
 	const [Id, setId] = useState("");
 	const [Pw, setPw] = useState("");
-	const [msg, setMsg] = useState("");
 	const [checked, setChecked] = useState(false);
 
 	const isEnabled = Id.trim() !== "" && Pw.trim() !== "";
 
 	const navigate = useNavigate();
-	const handleLogin = () => {
+	const handleSignupBtn = () => {
 		navigate("/signup");
 	};
 
-	const login = async () => {
+	const handleLogin = async (e) => {
+		e.preventDefault();
 		try {
-			const response = await axios.post(
-				"http://localhost:8080/api/auth/login",
-				{
-					Id,
-					Pw,
-				},
-			);
-
-			if (response.data.status === "success") {
-				localStorage.setItem("accessToken", response.data.accessToken);
-				localStorage.setItem("refreshToken", response.data.refreshToken);
-
-				setMsg("로그인 성공!");
-			}
-		} catch (error) {
-			if (error.response) {
-				setMsg(error.response.data.message);
-			} else {
-				setMsg("서버 연결 오류");
-			}
+			const data = await loginUser({ email: Id, password: Pw }); // email/password 전달
+			localStorage.setItem("token", data.accessToken);
+			// 로그인 성공 후 http에 토큰 설정
+			setAuthToken(data.accessToken);
+			navigate("/");
+			console.log("로그인 성공", data);
+		} catch (err) {
+			console.log("로그인 실패:", err);
+			alert("로그인 실패");
 		}
+		console.log(Id, Pw);
 	};
-	
+
 	return (
 		<PageWrapper>
 			<Title>Certif</Title>
@@ -75,10 +66,12 @@ function Login() {
 			<InputText
 				placeholder="비밀번호를 입력해 주세요"
 				value={Pw}
-				onChange={(e) => setPw(e.target.value)}
+				onChange={(e) => {
+					setPw(e.target.value);
+				}}
 			></InputText>
 			<Blank />
-			<LoginButton type="submit" disabled={!isEnabled} onClick={login}>
+			<LoginButton type="submit" disabled={!isEnabled} onClick={handleLogin}>
 				로그인
 			</LoginButton>
 			<Blank />
@@ -98,7 +91,7 @@ function Login() {
 			<Divide />
 			<WidthWrapper>
 				<InstText>처음이신가요?</InstText>
-				<SignButton onClick={handleLogin}>회원가입</SignButton>
+				<SignButton onClick={handleSignupBtn}>회원가입</SignButton>
 			</WidthWrapper>
 		</PageWrapper>
 	);
