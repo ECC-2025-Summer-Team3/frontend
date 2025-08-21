@@ -1,6 +1,6 @@
 import http from "../utils/http";
 
-//StudyPostService
+/* StudyPostService */
 
 // 1-1. 스터디 게시판 전체 글 조회 by 카테고리에서 기본 화면 (카테고리 번호=1)
 export const fetchStudyDefault = async () => {
@@ -38,7 +38,7 @@ export const deleteStudyPost = async (postId) => {
 	return res.status;
 };
 
-//StudyCommentService
+/* StudyCommentService */
 
 // 1. 스터디 게시판 글의 댓글 조회
 export const fetchStudyComments = async (postId) => {

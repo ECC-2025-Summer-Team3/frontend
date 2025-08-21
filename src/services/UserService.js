@@ -1,12 +1,12 @@
 import http from "../utils/http";
 
-// 마이페이지
-export async function fetchMyPage() {
+/* 마이페이지 */
+export const fetchMyPage = async () => {
 	const res = await http.get("/user/my-page");
 	return res.data;
 }
 
-//UserCommentService
+/* UserCommentService */
 
 // 1-1 내가 쓴 댓글 목록 조회
 export const fetchUserComments = async () => {
@@ -42,7 +42,7 @@ export const deleteUserComment = async (type, commentId) => {
 	return res.data;
 };
 
-//UserPostService
+/* UserPostService */
 
 // 1-1. 내가 쓴 글 조회
 export const fetchUserPosts = async () => {
@@ -60,7 +60,7 @@ export const fetchUserPostById = async (type, postId) => {
 };
 
 // 2. 내가 쓴 글 수정
-export const updateUserPost = async (type, postId, payload = {}) => {
+export const updateUserPost = async (type, postId, payload = {}) => {  //API 다시 확인 (@RequsetBody 2개?)
 	if (!type || postId == null) throw new Error("type과 postId가 필요합니다.");
 	const body = {
 		title: payload.title ?? null,

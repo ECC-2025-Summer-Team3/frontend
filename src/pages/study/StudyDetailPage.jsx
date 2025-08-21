@@ -21,6 +21,7 @@ const StudyDetailPage = () => {
 	const { postId } = useParams();
 	const id = Number(postId);
 
+	const [me, setMe] = useState(null);
 	const [post, setPost] = useState(null);
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState("");
@@ -38,8 +39,9 @@ const StudyDetailPage = () => {
 			setIsLoading(true);
 			try {
          // 현재 로그인 유저 id 가져오기
-        const me = await fetchMyPage();
-        setCurrentUserId(Number(me.id));
+        const meRes = await fetchMyPage();
+        setMe(meRes);
+        setCurrentUserId(Number(meRes.id));
 
         // 게시글 + 댓글 조회
 				const resPost = await fetchStudyPostById(id);
@@ -135,7 +137,7 @@ const StudyDetailPage = () => {
 				<PostBox>
 					<TitleRow>
 						<PostTitle>{post?.title}</PostTitle>
-						<Nickname>{post?.user?.nickname ?? "익명"}</Nickname>
+						<Nickname>{post?.nickname ?? "익명"}</Nickname>
 					</TitleRow>
 					<PostContent>{post?.content}</PostContent>
 				</PostBox>
@@ -146,6 +148,7 @@ const StudyDetailPage = () => {
 					{comments.map((cmt) => {
 						const isMine = Number(cmt.userId) === Number(currentUserId);
 						const isEditing = editingId === Number(cmt.commentId);
+						const avatar = isMine ? me?.profileImage : undefined;
 
 						return isEditing ? (
 							<EditItem key={cmt.commentId}>
@@ -176,7 +179,7 @@ const StudyDetailPage = () => {
 								key={cmt.commentId}
 								nickname={cmt.nickname ?? "익명"}
 								content={cmt.content}
-								avatarUrl={cmt.profile_image}
+								profileImage={avatar}
 								onEdit={isMine ? () => startEdit(cmt) : undefined}
 								onDelete={isMine ? () => removeComment(cmt) : undefined}
 								isMyComment={isMine}
