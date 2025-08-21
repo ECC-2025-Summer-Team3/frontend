@@ -24,7 +24,7 @@ const CategoryDropdown = ({
 	
 	const getLabel = (obj) => {
 		if (!obj) return "";
-		return obj.name ?? obj.categoryName ?? obj.label ?? "";
+		return obj.categoryName ?? "";
 	};
 	
 

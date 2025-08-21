@@ -22,7 +22,12 @@ const Header = () => {
 		(async () => {
 			try {
 				const data = await fetchCategories();
-				setCategories(data);
+				const list = Array.isArray(data)
+					? data
+					: Array.isArray(data?.data)
+						? data.data
+						: [];
+				setCategories(list);
 				if (data.length > 0) {
 					setHover(data[0].categoryId);
 				}
@@ -149,7 +154,7 @@ const Logo = styled.div`
 	font-weight: 700;
 	color: #000;
 	cursor: pointer;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const Nav = styled.nav`
@@ -176,7 +181,7 @@ const NavItem = styled(Link)`
 
 const LogoutBtn = styled.button`
 	display: flex;
-    flex-direction: column;
+	flex-direction: column;
 	align-items: center;
 	background: none;
 	border: none;

@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar as AntdAvatar } from "antd";
 
 const CommentItem = ({
 	nickname,
 	content,
-	avatarUrl,
+	profileImage,
 	onEdit,
 	onDelete,
 	isMyComment,
@@ -13,7 +15,13 @@ const CommentItem = ({
 	return (
 		<CommentContainer>
 			<AvatarWrapper>
-				<Avatar src={avatarUrl || "/default-avatar.png"} />
+				<AntAvatar
+					size={40}
+					shape="circle"
+					src={profileImage} 
+					icon={<UserOutlined />}
+					style={{ background: "#f0f2f5", color: "#555" }}
+				/>
 			</AvatarWrapper>
 
 			<CommentBody>
@@ -47,12 +55,7 @@ const AvatarWrapper = styled.div`
 	flex-shrink: 0;
 `;
 
-const Avatar = styled.img`
-	width: 40px;
-	height: 40px;
-	border-radius: 9999px;
-	object-fit: cover;
-`;
+const AntAvatar = styled(AntdAvatar)``;
 
 const CommentBody = styled.div`
 	flex: 1;

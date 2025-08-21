@@ -25,11 +25,8 @@ const StudyListPage = () => {
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
 
-
-	const normalizeCategories = (raw = []) =>
-		raw
-			.map((c) => ({ id: Number(c.categoryId), categoryName: c.categoryName }))
-			.sort((a, b) => a.id - b.id);
+	const toArray = (raw) =>
+		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
 	const normalizePosts = (arr = []) =>
 		arr.map((p) => ({
@@ -47,7 +44,13 @@ const StudyListPage = () => {
 		(async () => {
 			try {
 				const raw = await fetchCategories();
-				const cats = normalizeCategories(raw);
+				const rawArr = toArray(raw);
+				const cats = rawArr
+					.map((c) => ({
+						id: Number(c.categoryId),
+						name: c.categoryName,
+					}))
+					.sort((a, b) => a.id - b.id);
 				setCategories(cats);
 
 				if (cats.length > 0) {
@@ -103,7 +106,7 @@ const StudyListPage = () => {
 					<CategoryDropdown
 						options={categories}
 						selected={cat}
-						onChange={handleChangeCategory} // ← dùng handler mới
+						onChange={handleChangeCategory}
 					/>
 				</FlexCenter>
 
