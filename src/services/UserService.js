@@ -27,9 +27,7 @@ export const fetchUserCommentById = async (type, commentId) => {
 export const updateUserComment = async (type, commentId, content) => {
 	if (!type || commentId == null)
 		throw new Error("type과 commentId가 필요합니다.");
-	const res = await http.patch(`/user/my-comments/${type}/${commentId}`, {
-		content,
-	});
+	const res = await http.patch(`/user/my-comments/${type}/${commentId}`, content);
 	return res.data;
 };
 
@@ -38,7 +36,7 @@ export const deleteUserComment = async (type, commentId) => {
 	if (!type || commentId == null) {
 		throw new Error("type과 commentId가 필요합니다.");
 	}
-	const res = await http.delete(`user/my-comments/${type}/${commentId}`);
+	const res = await http.delete(`/user/my-comments/${type}/${commentId}`);
 	return res.data;
 };
 

@@ -2,7 +2,6 @@ import styled, { createGlobalStyle, css } from "styled-components";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 
-/* 커뮤니티 전용 글로벌 스타일 */
 export const CommunityBaseStyle = createGlobalStyle`
   * { box-sizing: border-box; margin: 0; padding: 0; }
 

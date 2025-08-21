@@ -1,5 +1,4 @@
-// menu의 Route 다시확인
-
+// const menu에서 라우팅 다시확인
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -7,110 +6,133 @@ import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import { UsergroupDeleteOutlined } from "@ant-design/icons";
 
+const HEADER_H = 30;
+
 const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
 	const [categories, setCategories] = useState([]);
-	const [certificates, setCertificates] = useState([]);
-
-	const [hover, setHover] = useState(null);
+	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
 
-	// 카테고리 전체 조회
+	const toArray = (raw) =>
+		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+
 	useEffect(() => {
 		(async () => {
 			try {
-				const data = await fetchCategories();
-				const list = Array.isArray(data)
-					? data
-					: Array.isArray(data?.data)
-						? data.data
-						: [];
-				setCategories(list);
-				if (data.length > 0) {
-					setHover(data[0].categoryId);
-				}
+				const raw = await fetchCategories();
+				const sorted = toArray(raw)
+					.map((c) => ({
+						...c,
+						categoryId: Number(c.categoryId ?? c.id),
+					}))
+					.sort((a, b) => a.categoryId - b.categoryId);
+
+				setCategories(sorted);
+
+				const entries = await Promise.all(
+					sorted.map(async (c) => {
+						try {
+							const arrRaw = await fetchCertificatesByCategory(c.categoryId);
+							const arr = toArray(arrRaw);
+							return [String(c.categoryId), arr];
+						} catch {
+							return [String(c.categoryId), []];
+						}
+					}),
+				);
+				setCertByCat(Object.fromEntries(entries));
 			} catch (err) {
 				console.error(err);
 			}
 		})();
 	}, []);
 
-	// 카테고리별 자격증 목록 조회
-	useEffect(() => {
-		if (hover == null) return;
-		(async () => {
-			try {
-				const data = await fetchCertificatesByCategory(hover);
-				setCertificates(data);
-			} catch (err) {
-				console.error(err);
-			}
-		})();
-	}, [hover]);
-
 	useEffect(() => {
 		setOpen(false);
 	}, [location.pathname]);
 
+	// 라우팅 다시 확인!
 	const menu = [
-		{ path: "/home", label: "시험 일정" }, //Route 다시 확인
-		{ path: "/certifiinfo", label: "자격증", isOpen: true }, //Route 다시 확인
+		{ path: "/home", label: "시험 일정" },
+		{ path: "/certifiinfo", label: "자격증", isOpen: true },
 		{ path: "/study/default", label: "스터디 모집" },
 		{ path: "/share/default", label: "공유마당" },
-		{ path: "/mypage", label: "마이 페이지" }, //Route 다시 확인
+		{ path: "/mypage", label: "마이 페이지" },
 	];
 
 	const goLogin = () => {
 		const ok = window.confirm("정말 로그아웃 하시겠습니까?");
 		if (!ok) return;
-		navigate("/login", { replace: true }); //Route 다시 확인
+		navigate("/login", { replace: true });
 	};
 
+	useEffect(() => {
+		document.body.style.overflow = open ? "hidden" : "";
+		return () => {
+			document.body.style.overflow = "";
+		};
+	}, [open]);
+
 	return (
-		<Bar onMouseLeave={() => setOpen(false)}>
-			{" "}
+		<Bar>
 			<Logo onMouseEnter={() => setOpen(false)}>Certif</Logo>
+
 			<Nav>
 				{menu.map((m) =>
 					m.isOpen ? (
-						<MegaWrapper
-							key={m.path}
-							onMouseEnter={() => setOpen(true)}
-							onMouseLeave={() => setOpen(false)}
-						>
-							<NavItem as="div" $active={open} role="button">
+						<MegaWrapper key={m.path}>
+							<NavItem
+								as="div"
+								$active={open}
+								role="button"
+								onMouseEnter={() => setOpen(true)}
+							>
 								{m.label}
 							</NavItem>
 
 							{open && (
-								<MegaPanel>
-									<Inner>
-										<CatTabs>
-											{categories.map((c) => (
-												<CatTab
-													key={c.categoryId}
-													$active={hover === c.categoryId}
-													onMouseEnter={() => setHover(c.categoryId)}
-												>
-													{c.categoryName}
-												</CatTab>
-											))}
-										</CatTabs>
+								<>
+									<Backdrop onClick={() => setOpen(false)} />
+									<MegaPanel
+										onMouseEnter={() => setOpen(true)}
+										onMouseLeave={() => setOpen(false)}
+									>
+										<Inner>
+											<CatBar>
+												{categories.map((c) => (
+													<CatLabel key={c.categoryId}>
+														{c.categoryName}
+													</CatLabel>
+												))}
+											</CatBar>
 
-										<ItemsRow>
-											{certificates.map((cert) => (
-												<ItemLink
-													key={cert.certificateId}
-													to={`/certifiinfo/${cert.certificateId}`}
-												>
-													{cert.certificateName}
-												</ItemLink>
-											))}
-										</ItemsRow>
-									</Inner>
-								</MegaPanel>
+											<ItemsGrid>
+												{categories.map((c) => {
+													const items = certByCat[c.categoryId] ?? [];
+													return (
+														<Col key={c.categoryId}>
+															{items.length === 0 ? (
+																<EmptyItem>항목 없음</EmptyItem>
+															) : (
+																items.map((cert) => (
+																	<ItemLink
+																		key={cert.certificateId}
+																		to={`/certifiinfo/${cert.certificateId}`}
+																	>
+																		{cert.certificateName}
+																	</ItemLink>
+																))
+															)}
+														</Col>
+													);
+												})}
+											</ItemsGrid>
+										</Inner>
+									</MegaPanel>
+								</>
 							)}
 						</MegaWrapper>
 					) : (
@@ -125,8 +147,9 @@ const Header = () => {
 					),
 				)}
 			</Nav>
+
 			<LogoutBtn onClick={goLogin}>
-				<UsergroupDeleteOutlined style={{ fontSize: "32px" }} />
+				<UsergroupDeleteOutlined style={{ fontSize: "25px" }} />
 				<span style={{ fontSize: "14px" }}>logout</span>
 			</LogoutBtn>
 		</Bar>
@@ -139,13 +162,13 @@ const Bar = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 12px 24px;
+	padding: 0px 20px 18px;
 	border-bottom: 1px solid #e5e7eb;
 	background: #fff;
 	position: sticky;
 	top: 0;
-	z-index: 50;
-	position: relative;
+	z-index: 100;
+	height: ${HEADER_H}px;
 `;
 
 const Logo = styled.div`
@@ -162,12 +185,10 @@ const Nav = styled.nav`
 	flex: 1;
 	justify-content: center;
 	gap: 60px;
-	position: relative;
-	z-index: 40;
 `;
 
 const NavItem = styled(Link)`
-	font-size: 1.2rem;
+	font-size: 1rem;
 	font-weight: 600;
 	padding: 8px 14px;
 	border-radius: 12px;
@@ -185,7 +206,7 @@ const LogoutBtn = styled.button`
 	align-items: center;
 	background: none;
 	border: none;
-	font-size: 0.95rem;
+	font-size: 0.8rem;
 	cursor: pointer;
 	color: #333;
 	&:hover {
@@ -193,62 +214,115 @@ const LogoutBtn = styled.button`
 	}
 `;
 
-const MegaWrapper = styled.div`
-	position: relative;
-`;
+const MegaWrapper = styled.div``;
 
 const MegaPanel = styled.div`
-	position: absolute;
-	left: 24px;
-	right: 24px;
-	top: 48px;
-	z-index: 45;
+	position: fixed;
+	top: calc(${HEADER_H}px + 50px);
+	left: 50%;
+	transform: translateX(-50%);
+	width: min(1100px, calc(100% - 48px));
+	z-index: 70;
+	display: block;
 `;
 
 const Inner = styled.div`
-	background: #f3f3f3;
-	border: 1px solid #e5e7eb;
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	text-align: left;
+`;
+
+const CatBar = styled.div`
+	background: #efefef;
 	border-radius: 16px;
-	padding: 16px 20px;
-	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-`;
-
-const CatTabs = styled.div`
+	padding: 14px 24px;
 	display: grid;
-	grid-auto-flow: column;
-	gap: 12px;
-	overflow-x: auto;
-	padding: 4px 2px;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 16px 28px;
+	justify-items: start;
+	align-items: center;
 `;
 
-const CatTab = styled.button`
-	white-space: nowrap;
-	padding: 10px 14px;
-	border-radius: 12px;
-	border: 1px solid #dedede;
-	background: ${({ $active }) => ($active ? "#e1e1e1" : "#efefef")};
+const CatLabel = styled.div`
 	font-weight: 700;
-	cursor: pointer;
-	&:hover {
-		background: #e7e7e7;
+	white-space: nowrap;
+	font-size: 1.1rem;
+	line-height: 1.7;
+	width: 100%;
+	text-align: center;
+	display: block;
+	width: 100%;
+	min-width: 0;
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+`;
+
+const ItemsGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 16px 28px;
+	padding: 0 24px 0 44px;
+	align-items: center;
+	> :nth-child(3) {
+		padding-left: 10px;
+	}
+	> :nth-child(4) {
+		padding-left: 35px;
+	}
+	> :nth-child(5) {
+		padding-left: 15px;
+	}
+	> :nth-child(6) {
+		padding-left: 20px;
+	}
+	> :nth-child(7) {
+		padding-left: 20px;
 	}
 `;
 
-const ItemsRow = styled.div`
-	margin-top: 10px;
-	display: grid;
-	grid-template-columns: repeat(6, 1fr);
-	gap: 12px 28px;
-	@media (max-width: 900px) {
-		grid-template-columns: repeat(3, 1fr);
-	}
+const Col = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	min-width: 0;
+	align-items: center;
 `;
 
 const ItemLink = styled(Link)`
 	color: #222;
-	font-weight: 600;
 	text-decoration: none;
+	line-height: 2;
+	font-weight: 500;
 	&:hover {
 		text-decoration: underline;
 	}
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow: hidden;
+	text-overflow: ellipsis;
+`;
+
+const EmptyItem = styled.div`
+	color: #9ca3af;
+	font-weight: 600;
+`;
+
+const Backdrop = styled.div`
+	position: fixed;
+	top: calc(${HEADER_H}px + 50px);
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #fff;
+	z-index: 60;
 `;

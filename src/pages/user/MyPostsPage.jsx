@@ -19,25 +19,57 @@ const MyPostsPage = () => {
 	const [toast, setToast] = useState("");
 	const navigate = useNavigate();
 
+	const toArray = (raw) => {
+		if (Array.isArray(raw)) return raw;
+		if (Array.isArray(raw?.data)) return raw.data;
+		if (Array.isArray(raw?.content)) return raw.content;
+		if (Array.isArray(raw?.data?.content)) return raw.data.content;
+		if (raw && typeof raw === "object") {
+			const arrs = Object.values(raw).filter(Array.isArray);
+			if (arrs.length) return arrs.flat();
+		}
+		return [];
+	};
+
+	const normalizeMyPosts = (arr = []) =>
+		arr.map((p) => ({
+			id: Number(p.id ?? p.postId),
+			title: p.title ?? "",
+			content: p.content ?? "",
+			type: p.type,
+			createdAt: p.createdAt ?? null,
+			updatedAt: p.updatedAt ?? null,
+		}));
+
 	useEffect(() => {
-		const loadPosts = async () => {
+		let alive = true;
+		(async () => {
 			try {
-				const data = await fetchUserPosts();
-				setPosts(data);
-			} catch {
+				const raw = await fetchUserPosts();
+				const list = toArray(raw);
+				const normalized = normalizeMyPosts(list).sort((a, b) =>
+					(b.createdAt ?? "").localeCompare(a.createdAt ?? ""),
+				);
+				if (alive) setPosts(normalized);
+			} catch (e) {
+				console.error(e);
 				alert("내가 작성한 글을 불러오지 못했습니다.");
 			} finally {
-				setLoading(false);
+				if (alive) setLoading(false);
 			}
+		})();
+		return () => {
+			alive = false;
 		};
-		loadPosts();
 	}, []);
 
 	const handleDelete = async (item) => {
 		if (!window.confirm("정말 삭제하시겠어요?")) return;
 		try {
 			await deleteUserPost(item.type, item.id);
-			setPosts((prev) => prev.filter((p) => p.id !== item.id));
+			setPosts((prev) =>
+				prev.filter((x) => !(x.id === item.id && x.type === item.type)),
+			);
 			setToast("삭제가 완료되었습니다");
 			setTimeout(() => setToast(""), 3000);
 		} catch {
@@ -62,7 +94,7 @@ const MyPostsPage = () => {
 			) : (
 				<List>
 					{posts.map((p) => (
-						<Item key={p.id}>
+						<Item  key={`${p.type}-${p.id}`}>
 							<PostTitle>{p.title ?? String(p)}</PostTitle>
 							{"content" in p && <CardContent>{p.content}</CardContent>}
 							<ButtonRow>
