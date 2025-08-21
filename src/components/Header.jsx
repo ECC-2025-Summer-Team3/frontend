@@ -150,7 +150,8 @@ const Bar = styled.header`
 
 const Logo = styled.div`
 	font-family: "Inter", sans-serif;
-	font-size: 32px;
+	font-size: clamp(2rem, 3vw, 2.5rem);
+	transition: font-size 0.5s ease;
 	font-weight: 700;
 	color: #000;
 	cursor: pointer;
@@ -161,19 +162,21 @@ const Nav = styled.nav`
 	display: flex;
 	flex: 1;
 	justify-content: center;
-	gap: 60px;
+	gap: clamp(16px, 5vw, 50px);
 	position: relative;
 	z-index: 40;
+	white-space: nowrap;
 `;
 
 const NavItem = styled(Link)`
-	font-size: 1.2rem;
+	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
 	font-weight: 600;
 	padding: 8px 14px;
 	border-radius: 12px;
 	text-decoration: none;
 	color: #111;
 	background: ${({ $active }) => ($active ? "#e5e5e5" : "transparent")};
+	transition: font-size 0.2s ease;
 	&:hover {
 		background: #f3f3f3;
 	}

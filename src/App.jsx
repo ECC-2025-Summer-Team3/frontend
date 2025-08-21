@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import "antd/dist/reset.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import StudyListPage from "./pages/study/StudyListPage";
 import StudyWritePage from "./pages/study/StudyWritePage";
 import StudyDetailPage from "./pages/study/StudyDetailPage";
@@ -16,14 +16,9 @@ import Header from "./components/Header.jsx";
 function App() {
 	return (
 		<Router>
+			<Header />
 			<Routes>
-				
-				{/* 기본 라우팅 - 배포 테스트 용 */}
-				<Route path="/" element={<Navigate to="/header" replace />} /> 
-				
-				<Route path="/header" element={<Header />} />
-
-				<Route path="/home" element={<Home />} />
+				<Route path="/" element={<Home />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<SignUp />} />
 				<Route path="/certifiinfo" element={<CertifiInfo />} />
