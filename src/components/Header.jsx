@@ -6,7 +6,6 @@ import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import { UsergroupDeleteOutlined } from "@ant-design/icons";
 
-const HEADER_H = 30;
 
 const Header = () => {
 	const location = useLocation();
@@ -168,12 +167,13 @@ const Bar = styled.header`
 	position: sticky;
 	top: 0;
 	z-index: 100;
-	height: ${HEADER_H}px;
+	height: clamp(2.5rem, 4vw, 3rem);
 `;
 
 const Logo = styled.div`
 	font-family: "Inter", sans-serif;
-	font-size: 32px;
+	font-size: clamp(2rem, 3vw, 2.5rem);
+	transition: font-size 0.5s ease;
 	font-weight: 700;
 	color: #000;
 	cursor: pointer;
@@ -184,17 +184,20 @@ const Nav = styled.nav`
 	display: flex;
 	flex: 1;
 	justify-content: center;
-	gap: 60px;
+	gap: clamp(16px, 5vw, 50px);
+	z-index: 40;
+	white-space: nowrap;
 `;
 
 const NavItem = styled(Link)`
-	font-size: 1rem;
+	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
 	font-weight: 600;
 	padding: 8px 14px;
 	border-radius: 12px;
 	text-decoration: none;
 	color: #111;
 	background: ${({ $active }) => ($active ? "#e5e5e5" : "transparent")};
+	transition: font-size 0.2s ease;
 	&:hover {
 		background: #f3f3f3;
 	}
@@ -218,7 +221,7 @@ const MegaWrapper = styled.div``;
 
 const MegaPanel = styled.div`
 	position: fixed;
-	top: calc(${HEADER_H}px + 50px);
+	top: clamp(2rem, 10vh, 6rem);
 	left: 50%;
 	transform: translateX(-50%);
 	width: min(1100px, calc(100% - 48px));
@@ -253,7 +256,7 @@ const CatLabel = styled.div`
 	font-size: 1.1rem;
 	line-height: 1.7;
 	width: 100%;
-	text-align: center;
+	text-align: left;
 	display: block;
 	width: 100%;
 	min-width: 0;
@@ -265,26 +268,12 @@ const CatLabel = styled.div`
 `;
 
 const ItemsGrid = styled.div`
-	display: grid;
-	grid-template-columns: repeat(7, minmax(0, 1fr));
-	gap: 16px 28px;
-	padding: 0 24px 0 44px;
-	align-items: center;
-	> :nth-child(3) {
-		padding-left: 10px;
-	}
-	> :nth-child(4) {
-		padding-left: 35px;
-	}
-	> :nth-child(5) {
-		padding-left: 15px;
-	}
-	> :nth-child(6) {
-		padding-left: 20px;
-	}
-	> :nth-child(7) {
-		padding-left: 20px;
-	}
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px 28px;    
+  padding: 0 24px;    
+  justify-items: start;  
+  align-items: start;
 `;
 
 const Col = styled.div`
@@ -319,7 +308,7 @@ const EmptyItem = styled.div`
 
 const Backdrop = styled.div`
 	position: fixed;
-	top: calc(${HEADER_H}px + 50px);
+	top: clamp(2rem, 10vh, 6rem);
 	left: 0;
 	right: 0;
 	bottom: 0;
