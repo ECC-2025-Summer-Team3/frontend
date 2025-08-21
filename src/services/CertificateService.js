@@ -10,7 +10,7 @@ export const fetchCertificatesByCategory = async (categoryId) => {
 // 2. 자격증 일정 정보 조회
 export const fetchCertificatesSchedule = async (categoryId) => {
 	if (!categoryId) throw new Error("categoryId가 필요합니다.");
-	const res = await http.get(`/api/categories/${categoryId}/schedules`);
+	const res = await http.get(`/categories/${categoryId}/schedules`);
 	return res.data;
 };
 
