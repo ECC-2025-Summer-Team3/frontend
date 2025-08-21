@@ -131,15 +131,15 @@ const ButtonOutsideWrap = styled.div`
 	margin-top: 1rem;
 `;
 const ReadOnlyBox = styled.div`
-  background-color: rgba(254, 245, 245, 1);
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+	background-color: rgba(254, 245, 245, 1);
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
 
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #000;
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #000;
 
-  padding: 8px 12px;    
-  text-align: center;
-  max-width: 340px;
+	padding: 8px 12px;
+	text-align: center;
+	max-width: 340px;
 `;

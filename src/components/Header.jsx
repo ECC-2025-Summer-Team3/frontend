@@ -55,7 +55,7 @@ const Header = () => {
 	}, [location.pathname]);
 
 	const menu = [
-		{ path: "/home", label: "시험 일정" }, //Route 다시 확인
+		{ path: "/", label: "시험 일정" }, //Route 다시 확인
 		{ path: "/certifiinfo", label: "자격증", isOpen: true }, //Route 다시 확인
 		{ path: "/study/default", label: "스터디 모집" },
 		{ path: "/share/default", label: "공유마당" },
