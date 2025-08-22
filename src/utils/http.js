@@ -2,7 +2,7 @@ import axios from "axios";
 
 const http = axios.create({
 	//#Mixed Content (https에서 http 요청)에러가 떠서 실제 서버 baseURL은 netlify.toml파일에 설정했습니다.
-	baseURL: "https://3.34.223.76:8080/api",
+	baseURL: "http://3.34.223.76:8080/api",
 	headers: { "Content-Type": "application/json" },
 	withCredentials: true,
 });
