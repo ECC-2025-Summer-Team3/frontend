@@ -19,6 +19,7 @@ const Header = () => {
 	const [categories, setCategories] = useState([]);
 	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
+	const [open2, setOpen2] = useState(false);
 
 	const toArray = (raw) =>
 		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
@@ -120,7 +121,10 @@ const Header = () => {
 										<Inner>
 											<CatBar>
 												{categories.map((c) => (
-													<CatLabel key={c.categoryId}>
+													<CatLabel
+														key={c.categoryId}
+														onMouseEnter={() => setOpen2(true)}
+													>
 														{c.categoryName}
 													</CatLabel>
 												))}
@@ -130,7 +134,10 @@ const Header = () => {
 												{categories.map((c) => {
 													const items = certByCat[c.categoryId] ?? [];
 													return (
-														<Col key={c.categoryId}>
+														<Col
+															key={c.categoryId}
+															style={{ display: open2 ? "flex" : "none" }}
+														>
 															{items.length === 0 ? (
 																<EmptyItem>항목 없음</EmptyItem>
 															) : (
