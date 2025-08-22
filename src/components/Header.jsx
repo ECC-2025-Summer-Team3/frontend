@@ -219,15 +219,14 @@ const Nav = styled.nav`
 
 const NavItem = styled(Link)`
 	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
-	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
+	transition: font-size 0.2s ease;
 	font-weight: 600;
 	padding: 8px 14px;
 	border-radius: 12px;
 	text-decoration: none;
 	color: #111;
 	background: ${({ $active }) => ($active ? "#e5e5e5" : "transparent")};
-	transition: font-size 0.2s ease;
-	transition: font-size 0.2s ease;
+
 	&:hover {
 		background: #f3f3f3;
 	}
@@ -295,9 +294,10 @@ const CatBar = styled.div`
 `;
 
 const CatLabel = styled.div`
+	font-size: clamp(0.8rem, 1.2vw, 1.2rem);
+	transition: font-size 0.2s ease;
 	font-weight: 700;
 	white-space: nowrap;
-	font-size: 1.1rem;
 	line-height: 1.7;
 	width: 100%;
 	text-align: left;
@@ -306,7 +306,6 @@ const CatLabel = styled.div`
 	min-width: 0;
 	white-space: nowrap;
 	word-break: keep-all;
-	overflow: hidden;
 	text-overflow: ellipsis;
 	display: block;
 `;
@@ -329,6 +328,8 @@ const Col = styled.div`
 `;
 
 const ItemLink = styled(Link)`
+	font-size: clamp(0.5rem, 1vw, 1rem);
+	transition: font-size 0.2s ease;
 	color: #222;
 	text-decoration: none;
 	line-height: 2;
@@ -341,7 +342,6 @@ const ItemLink = styled(Link)`
 	max-width: 100%;
 	white-space: nowrap;
 	word-break: keep-all;
-	overflow: hidden;
 	text-overflow: ellipsis;
 `;
 
