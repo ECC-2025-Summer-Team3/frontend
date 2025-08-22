@@ -14,17 +14,33 @@ import {
 import { useState } from "react";
 import { Avatar, Upload } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
-import { useEffect } from "react";
+import { registerUser } from "../../services/AuthService";
+import { useNavigate } from "react-router-dom";
 
-function SignIn() {
-	useEffect(() => {
-		fetch("http://localhost:8080/api/auth/signup")
-			.then((res) => res.json())
-			.then((data) => console.log(data))
-			.catch((err) => console.error(err));
-	}, []);
-
+function SignUp() {
+	const [nickname, setNickname] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [img, setImg] = useState(null);
+
+	const navigate = useNavigate();
+
+	const handleSignup = async (e) => {
+		e.preventDefault();
+		try {
+			const data = await registerUser({
+				nickname: nickname,
+				email: email,
+				password: password,
+			}); // email/password 전달
+			navigate("/login");
+			console.log("로그인 성공", data);
+		} catch (err) {
+			console.log("로그인 실패:", err);
+			alert("로그인 실패");
+		}
+		console.log(nickname, email, password);
+	};
 
 	const getBase64 = (file, callback) => {
 		const reader = new FileReader();
@@ -60,27 +76,39 @@ function SignIn() {
 			<Blank />
 			<InstText>닉네임</InstText>
 			<WidthWrapper>
-				<InputText placeholder="닉네임을 입력해주세요" />
+				<InputText
+					placeholder="닉네임을 입력해주세요"
+					value={nickname}
+					onChange={(e) => setNickname(e.target.value)}
+				/>
 				<OverlapButton>중복확인</OverlapButton>
 			</WidthWrapper>
 			<Blank />
 			<InstText>이메일</InstText>
 			<WidthWrapper>
-				<InputText placeholder="이메일을 입력해주세요" />
+				<InputText
+					placeholder="이메일을 입력해주세요"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+				/>
 				<OverlapButton>중복확인</OverlapButton>
 			</WidthWrapper>
 			<Blank />
 			<InstText>비밀번호</InstText>
-			<InputText placeholder="비밀번호를 입력해주세요" />
+			<InputText
+				placeholder="비밀번호를 입력해주세요"
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+			/>
 			<Blank />
 			<InstText>비밀번호 확인</InstText>
 
 			<InputText placeholder="비밀번호를 다시 입력해주세요" />
 			<Blank />
 			<Blank />
-			<JoinButton>가입하기</JoinButton>
+			<JoinButton onClick={handleSignup}>가입하기</JoinButton>
 		</PageWrapper>
 	);
 }
 
-export default SignIn;
+export default SignUp;
