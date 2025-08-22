@@ -10,11 +10,17 @@ export const loginUser = async ({ email, password }) => {
 };
 
 //2. 회원가입
-export const registerUser = async ({ nickname, email, password }) => {
+export const registerUser = async (nickname, email, password) => {
 	const res = await http.post("/auth/signup", {
 		nickname,
 		email,
 		password,
 	});
+	return res.data;
+};
+
+// 3.로그아웃
+export const logoutUser = async () => {
+	const res = await http.post("/auth/logout");
 	return res.data;
 };

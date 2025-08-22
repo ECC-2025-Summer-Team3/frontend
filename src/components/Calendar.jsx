@@ -4,11 +4,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import { CalendarWrapper } from "../styles/CalendarStyle.jsx";
 import { useState, useEffect } from "react";
 import { fetchFavoritesSchedules } from "../services/CertificateService.js";
+import { useRef } from "react";
 
 const Calendar = () => {
 	const [schedules, setSchedules] = useState([]);
 	const [y, setY] = useState(new Date().getFullYear());
-	const [m, setM] = useState(new Date().getMonth());
+	const [m, setM] = useState(new Date().getMonth() + 1);
+	const calendarRef = useRef(null);
 
 	useEffect(() => {
 		const loadSchedules = async () => {
@@ -23,14 +25,13 @@ const Calendar = () => {
 
 				const data = await fetchFavoritesSchedules(format(start), format(end));
 				setSchedules(Array.isArray(data) ? data : []);
-				console.log(data);
 			} catch (err) {
 				console.error("즐겨찾기 일정 조회 실패:", err.message);
-			} finally {
-				console.log(schedules);
 			}
 		};
 		loadSchedules();
+		console.log(y, m);
+		console.log(schedules);
 	}, [y, m]);
 
 	const events = schedules.map((s) => ({
@@ -38,7 +39,7 @@ const Calendar = () => {
 		start: s.startDate,
 		end: s.endDate
 			? new Date(new Date(s.endDate).getTime() + 24 * 60 * 60 * 1000)
-					.toString()
+					.toISOString()
 					.slice(0, 10)
 			: s.startDate,
 	}));
@@ -46,6 +47,7 @@ const Calendar = () => {
 	return (
 		<CalendarWrapper>
 			<FullCalendar
+				ref={calendarRef}
 				plugins={[dayGridPlugin]}
 				initialView="dayGridMonth"
 				locale={"ko"}
@@ -64,9 +66,25 @@ const Calendar = () => {
 					return { html: String(arg.date.getDate()) };
 				}}
 				events={events}
-				datesSet={(arg) => {
-					setY(arg.start.getFullYear());
-					setM(arg.start.getMonth());
+				customButtons={{
+					prev: {
+						click: () => {
+							calendarRef.current.getApi().prev(); // 달 이동
+							const start = calendarRef.current.getApi().view.currentStart;
+							setY(start.getFullYear());
+							if (start.getMonth() === 0) setM(1);
+							else setM(start.getMonth() + 1);
+						},
+					},
+					next: {
+						click: () => {
+							calendarRef.current.getApi().next(); // 달 이동
+							const start = calendarRef.current.getApi().view.currentStart;
+							setY(start.getFullYear());
+							if (start.getMonth() === 0) setM(1);
+							else setM(start.getMonth() + 1);
+						},
+					},
 				}}
 			/>
 		</CalendarWrapper>

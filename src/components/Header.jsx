@@ -1,15 +1,21 @@
 // const menu에서 라우팅 다시확인
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
-import { UsergroupDeleteOutlined } from "@ant-design/icons";
+import {
+	UsergroupDeleteOutlined,
+	UsergroupAddOutlined,
+} from "@ant-design/icons";
+import { logoutUser } from "../services/AuthService";
+import { setAuthToken } from "../utils/http";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-
+	const [isLoggedin, setIsLoggedin] = useState(false);
 	const [categories, setCategories] = useState([]);
 	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
@@ -18,6 +24,9 @@ const Header = () => {
 		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+		setIsLoggedin(Boolean(token));
+
 		(async () => {
 			try {
 				const raw = await fetchCategories();
@@ -46,7 +55,7 @@ const Header = () => {
 				console.error(err);
 			}
 		})();
-	}, []);
+	}, [isLoggedin]);
 
 	useEffect(() => {
 		setOpen(false);
@@ -61,10 +70,20 @@ const Header = () => {
 		{ path: "/mypage", label: "마이 페이지" },
 	];
 
-	const goLogin = () => {
+	const handleLogin = () => {
+		navigate("/login");
+	};
+
+	const handleLogout = async (e) => {
 		const ok = window.confirm("정말 로그아웃 하시겠습니까?");
 		if (!ok) return;
-		navigate("/login", { replace: true });
+		e.preventDefault();
+		await logoutUser();
+		navigate("/");
+		localStorage.removeItem("token");
+		setIsLoggedin(false);
+		setAuthToken(null);
+		alert("로그아웃 되었습니다.");
 	};
 
 	useEffect(() => {
@@ -146,10 +165,17 @@ const Header = () => {
 				)}
 			</Nav>
 
-			<LogoutBtn onClick={goLogin}>
-				<UsergroupDeleteOutlined style={{ fontSize: "25px" }} />
-				<span style={{ fontSize: "14px" }}>logout</span>
-			</LogoutBtn>
+			{isLoggedin ? (
+				<LogoutBtn onClick={handleLogout}>
+					<UsergroupDeleteOutlined style={{ fontSize: "25px" }} />
+					<span style={{ fontSize: "14px" }}>logout</span>
+				</LogoutBtn>
+			) : (
+				<LoginBtn onClick={handleLogin}>
+					<UsergroupAddOutlined style={{ fontSize: "25px" }} />
+					<span style={{ fontSize: "14px" }}>login</span>
+				</LoginBtn>
+			)}
 		</Bar>
 	);
 };
@@ -204,6 +230,20 @@ const NavItem = styled(Link)`
 	transition: font-size 0.2s ease;
 	&:hover {
 		background: #f3f3f3;
+	}
+`;
+
+const LoginBtn = styled.button`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: none;
+	border: none;
+	font-size: 0.8rem;
+	cursor: pointer;
+	color: #333;
+	&:hover {
+		color: #000;
 	}
 `;
 

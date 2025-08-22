@@ -2,7 +2,7 @@
 
 [[redirects]]
 from = "/api/*"
-to = "http://3.34.223.76:8080/:splat"
+to = "http://localhost:8080/:splat"
 status = 200
 force = true
 

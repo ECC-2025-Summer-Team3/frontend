@@ -28,11 +28,7 @@ function SignUp() {
 	const handleSignup = async (e) => {
 		e.preventDefault();
 		try {
-			const data = await registerUser({
-				nickname: nickname,
-				email: email,
-				password: password,
-			});
+			const data = await registerUser(nickname, email, password);
 			console.log("회원가입 성공", data);
 			navigate("/login");
 		} catch (err) {

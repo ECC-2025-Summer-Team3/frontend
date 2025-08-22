@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "antd/dist/reset.css";
 import { useNavigate } from "react-router-dom";
 import {
@@ -39,6 +39,10 @@ function Login() {
 			localStorage.setItem("token", data.accessToken);
 			// 로그인 성공 후 http에 토큰 설정
 			setAuthToken(data.accessToken);
+			if (checked) {
+				localStorage.setItem("email", Id);
+				localStorage.setItem("password", Pw);
+			}
 			navigate("/");
 			console.log("로그인 성공", data);
 		} catch (err) {
@@ -48,6 +52,21 @@ function Login() {
 		console.log(Id, Pw);
 	};
 
+	const handleChecked = (e) => {
+		setChecked(e.target.checked);
+		localStorage.setItem("autoLogin", e.target.checked);
+	};
+
+	useEffect(() => {
+		const autoLogin = localStorage.getItem("autoLogin");
+		if (autoLogin === "true") {
+			setChecked(true);
+			setId(localStorage.getItem("email") || "");
+			setPw(localStorage.getItem("password") || "");
+		}
+		console.log(Id, Pw);
+	}, []);
+
 	return (
 		<PageWrapper>
 			<Title>Certif</Title>
@@ -55,7 +74,7 @@ function Login() {
 			<LoginMessage>이메일과 비밀번호를</LoginMessage>
 			<LoginMessage>입력해주세요.</LoginMessage>
 			<Blank />
-			<InstText>Login</InstText>
+			<InstText>Email</InstText>
 			<InputText
 				placeholder="이메일을 입력해 주세요"
 				value={Id}
@@ -64,6 +83,7 @@ function Login() {
 			<Blank />
 			<InstText>Password</InstText>
 			<InputText
+				type="password"
 				placeholder="비밀번호를 입력해 주세요"
 				value={Pw}
 				onChange={(e) => {
@@ -76,11 +96,7 @@ function Login() {
 			</LoginButton>
 			<Blank />
 			<WidthWrapper>
-				<LoginCheck
-					type="checkbox"
-					checked={checked}
-					onChange={(e) => setChecked(e.target.checked)}
-				>
+				<LoginCheck type="checkbox" checked={checked} onChange={handleChecked}>
 					자동로그인
 				</LoginCheck>
 				<RightLinks>
