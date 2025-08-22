@@ -31,7 +31,7 @@ function App() {
 
 				{/* MainLayout: 헤더 있는 페이지 */}
 				<Route element={<MainLayout />}>
-					<Route path="/home" element={<Home />} />
+					<Route path="/" element={<Home />} />
 					<Route path="/certifiinfo" element={<CertifiInfo />} />
 
 					{/* Study */}
