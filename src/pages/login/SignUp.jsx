@@ -32,12 +32,12 @@ function SignUp() {
 				nickname: nickname,
 				email: email,
 				password: password,
-			}); // email/password 전달
+			});
 			navigate("/login");
-			console.log("로그인 성공", data);
+			console.log("회원가입 성공", data);
 		} catch (err) {
-			console.log("로그인 실패:", err);
-			alert("로그인 실패");
+			console.log("회원가입 실패:", err);
+			alert(err.response?.data?.message || "회원가입 실패");
 		}
 		console.log(nickname, email, password);
 	};
