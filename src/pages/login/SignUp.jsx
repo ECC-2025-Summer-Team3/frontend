@@ -33,10 +33,10 @@ function SignUp() {
 				email: email,
 				password: password,
 			});
-			navigate("/login");
 			console.log("회원가입 성공", data);
+			navigate("/login");
 		} catch (err) {
-			console.log("회원가입 실패:", err);
+			console.log("회원가입 실패:", err.response?.data?.data || err);
 			alert(err.response?.data?.message || "회원가입 실패");
 		}
 		console.log(nickname, email, password);
