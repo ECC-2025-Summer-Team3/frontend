@@ -22,7 +22,6 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-
 				{/* AuthLayout: 헤더 없는 페이지 */}
 				<Route element={<AuthLayout />}>
 					<Route path="/login" element={<Login />} />
@@ -32,7 +31,7 @@ function App() {
 				{/* MainLayout: 헤더 있는 페이지 */}
 				<Route element={<MainLayout />}>
 					<Route path="/" element={<Home />} />
-					<Route path="/certifiinfo" element={<CertifiInfo />} />
+					<Route path="/certifiinfo/:certificateId" element={<CertifiInfo />} />
 
 					{/* Study */}
 					<Route path="/study">

@@ -8,14 +8,15 @@ import {
 	UsergroupDeleteOutlined,
 	UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { logoutUser } from "../services/AuthService";
 import { setAuthToken } from "../utils/http";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [isLoggedin, setIsLoggedin] = useState(false);
+	const [isLoggedin, setIsLoggedin] = useState(
+		Boolean(localStorage.getItem("token")),
+	);
 	const [categories, setCategories] = useState([]);
 	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
@@ -27,7 +28,6 @@ const Header = () => {
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		setIsLoggedin(Boolean(token));
-
 		(async () => {
 			try {
 				const raw = await fetchCategories();
@@ -56,7 +56,7 @@ const Header = () => {
 				console.error(err);
 			}
 		})();
-	}, [isLoggedin]);
+	}, []);
 
 	useEffect(() => {
 		setOpen(false);
@@ -75,16 +75,31 @@ const Header = () => {
 		navigate("/login");
 	};
 
-	const handleLogout = async (e) => {
+	const handleLogout = async () => {
 		const ok = window.confirm("정말 로그아웃 하시겠습니까?");
 		if (!ok) return;
-		e.preventDefault();
-		await logoutUser();
-		navigate("/");
-		localStorage.removeItem("token");
-		setIsLoggedin(false);
-		setAuthToken(null);
-		alert("로그아웃 되었습니다.");
+
+		const token = localStorage.getItem("token");
+		if (!token) {
+			alert("이미 로그아웃 상태입니다.");
+			setIsLoggedin(false);
+			navigate("/");
+			return;
+		}
+
+		setAuthToken(token);
+		try {
+			// await logoutUser();
+			localStorage.removeItem("token");
+
+			setAuthToken(null);
+			setIsLoggedin(false);
+			alert("로그아웃 되었습니다.");
+			navigate("/");
+		} catch (e) {
+			console.error(e);
+			alert("로그아웃 실패");
+		}
 	};
 
 	useEffect(() => {
