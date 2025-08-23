@@ -1,7 +1,7 @@
 // const menu에서 라우팅 다시확인
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import {
@@ -9,13 +9,14 @@ import {
 	UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { logoutUser } from "../services/AuthService";
-import { setAuthToken } from "../utils/http";
-import { useNavigate } from "react-router-dom";
+import http from "../utils/http";
 
 const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [isLoggedin, setIsLoggedin] = useState(false);
+	const [isLoggedin, setIsLoggedin] = useState(
+		Boolean(localStorage.getItem("token")),
+	);
 	const [categories, setCategories] = useState([]);
 	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
@@ -24,9 +25,16 @@ const Header = () => {
 		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		setIsLoggedin(Boolean(token));
+		const sync = () => setIsLoggedin(Boolean(localStorage.getItem("token")));
+		window.addEventListener("storage", sync);
+		window.addEventListener("auth-changed", sync);
+		return () => {
+			window.removeEventListener("storage", sync);
+			window.removeEventListener("auth-changed", sync);
+		};
+	}, []);
 
+	useEffect(() => {
 		(async () => {
 			try {
 				const raw = await fetchCategories();
@@ -61,6 +69,11 @@ const Header = () => {
 		setOpen(false);
 	}, [location.pathname]);
 
+	useEffect(() => {
+		document.body.style.overflow = open ? "hidden" : "";
+		return () => (document.body.style.overflow = "");
+	}, [open]);
+
 	// 라우팅 다시 확인!
 	const menu = [
 		{ path: "/", label: "시험 일정" }, //Route 다시 확인
@@ -75,23 +88,26 @@ const Header = () => {
 	};
 
 	const handleLogout = async (e) => {
-		const ok = window.confirm("정말 로그아웃 하시겠습니까?");
-		if (!ok) return;
 		e.preventDefault();
-		await logoutUser();
-		navigate("/");
-		localStorage.removeItem("token");
-		setIsLoggedin(false);
-		setAuthToken(null);
-		alert("로그아웃 되었습니다.");
-	};
+		if (!window.confirm("정말 로그아웃 하시겠습니까?")) return;
 
-	useEffect(() => {
-		document.body.style.overflow = open ? "hidden" : "";
-		return () => {
-			document.body.style.overflow = "";
-		};
-	}, [open]);
+		try {
+			await logoutUser();
+		} catch (err) {
+			console.warn("logout failed; clearing local token anyway", err);
+		} finally {
+			localStorage.removeItem("token");
+			try {
+				delete http.defaults.headers.common.Authorization;
+			} catch {
+				//
+			}
+			setIsLoggedin(false);
+			window.dispatchEvent(new Event("auth-changed"));
+			navigate("/");
+			alert("로그아웃 되었습니다.");
+		}
+	};
 
 	return (
 		<Bar>

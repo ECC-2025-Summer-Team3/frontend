@@ -1,8 +1,9 @@
+import publicApi from "../utils/auth";
 import http from "../utils/http";
 
 // 1. 로그인
 export const loginUser = async ({ email, password }) => {
-	const res = await http.post("/auth/login", {
+	const res = await publicApi.post("/auth/login", { //publicApi
 		email,
 		password,
 	});
@@ -11,7 +12,7 @@ export const loginUser = async ({ email, password }) => {
 
 //2. 회원가입
 export const registerUser = async (nickname, email, password) => {
-	const res = await http.post("/auth/signup", {
+	const res = await publicApi.post("/auth/signup", { ////publicApi
 		nickname,
 		email,
 		password,
