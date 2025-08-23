@@ -1,15 +1,14 @@
-// const menu에서 라우팅 다시확인
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import {
 	UsergroupDeleteOutlined,
 	UsergroupAddOutlined,
 } from "@ant-design/icons";
-import { setAuthToken } from "../utils/http";
-import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../services/AuthService";
+import http from "../utils/http";
 
 const Header = () => {
 	const location = useLocation();
@@ -20,14 +19,21 @@ const Header = () => {
 	const [categories, setCategories] = useState([]);
 	const [certByCat, setCertByCat] = useState({});
 	const [open, setOpen] = useState(false);
-	const [open2, setOpen2] = useState(false);
 
 	const toArray = (raw) =>
 		Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		setIsLoggedin(Boolean(token));
+		const sync = () => setIsLoggedin(Boolean(localStorage.getItem("token")));
+		window.addEventListener("storage", sync);
+		window.addEventListener("auth-changed", sync);
+		return () => {
+			window.removeEventListener("storage", sync);
+			window.removeEventListener("auth-changed", sync);
+		};
+	}, []);
+
+	useEffect(() => {
 		(async () => {
 			try {
 				const raw = await fetchCategories();
@@ -56,11 +62,16 @@ const Header = () => {
 				console.error(err);
 			}
 		})();
-	}, []);
+	}, [isLoggedin]);
 
 	useEffect(() => {
 		setOpen(false);
 	}, [location.pathname]);
+
+	useEffect(() => {
+		document.body.style.overflow = open ? "hidden" : "";
+		return () => (document.body.style.overflow = "");
+	}, [open]);
 
 	// 라우팅 다시 확인!
 	const menu = [
@@ -75,39 +86,27 @@ const Header = () => {
 		navigate("/login");
 	};
 
-	const handleLogout = async () => {
-		const ok = window.confirm("정말 로그아웃 하시겠습니까?");
-		if (!ok) return;
+	const handleLogout = async (e) => {
+		e.preventDefault();
+		if (!window.confirm("정말 로그아웃 하시겠습니까?")) return;
 
-		const token = localStorage.getItem("token");
-		if (!token) {
-			alert("이미 로그아웃 상태입니다.");
-			setIsLoggedin(false);
-			navigate("/");
-			return;
-		}
-
-		setAuthToken(token);
 		try {
-			// await logoutUser();
+			await logoutUser();
+		} catch (err) {
+			console.warn("logout failed; clearing local token anyway", err);
+		} finally {
 			localStorage.removeItem("token");
-
-			setAuthToken(null);
+			try {
+				delete http.defaults.headers.common.Authorization;
+			} catch {
+				//
+			}
 			setIsLoggedin(false);
-			alert("로그아웃 되었습니다.");
+			window.dispatchEvent(new Event("auth-changed"));
 			navigate("/");
-		} catch (e) {
-			console.error(e);
-			alert("로그아웃 실패");
+			alert("로그아웃 되었습니다.");
 		}
 	};
-
-	useEffect(() => {
-		document.body.style.overflow = open ? "hidden" : "";
-		return () => {
-			document.body.style.overflow = "";
-		};
-	}, [open]);
 
 	return (
 		<Bar>
@@ -136,10 +135,7 @@ const Header = () => {
 										<Inner>
 											<CatBar>
 												{categories.map((c) => (
-													<CatLabel
-														key={c.categoryId}
-														onMouseEnter={() => setOpen2(true)}
-													>
+													<CatLabel key={c.categoryId}>
 														{c.categoryName}
 													</CatLabel>
 												))}
@@ -149,10 +145,7 @@ const Header = () => {
 												{categories.map((c) => {
 													const items = certByCat[c.categoryId] ?? [];
 													return (
-														<Col
-															key={c.categoryId}
-															style={{ display: open2 ? "flex" : "none" }}
-														>
+														<Col key={c.categoryId}>
 															{items.length === 0 ? (
 																<EmptyItem>항목 없음</EmptyItem>
 															) : (

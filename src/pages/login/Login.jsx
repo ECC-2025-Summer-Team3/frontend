@@ -18,7 +18,6 @@ import {
 	SignButton,
 } from "../../styles/LoginStyle";
 import { loginUser } from "../../services/AuthService";
-import { setAuthToken } from "../../utils/http";
 
 function Login() {
 	const [Id, setId] = useState("");
@@ -37,8 +36,9 @@ function Login() {
 		try {
 			const data = await loginUser({ email: Id, password: Pw }); // email/password 전달
 			localStorage.setItem("token", data.accessToken);
-			// 로그인 성공 후 http에 토큰 설정
-			setAuthToken(data.accessToken);
+			// 로그인 성공 시: 토큰은 localStorage에 저장
+			localStorage.setItem("token", data.accessToken);
+			window.dispatchEvent(new Event("auth-changed"));
 			if (checked) {
 				localStorage.setItem("email", Id);
 				localStorage.setItem("password", Pw);
