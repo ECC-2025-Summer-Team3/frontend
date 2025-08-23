@@ -27,3 +27,10 @@ export const fetchFavoritesSchedules = async (startDate, endDate) => {
 	});
 	return res.data;
 };
+
+// 4. 자격증 상세 정보 조회
+export const fetchCertificateDetail = async (certificateId) => {
+	if (!certificateId) throw new Error("certificateId가 필요합니다.");
+	const res = await http.get(`/certificates/${certificateId}`);
+	return res.data;
+};

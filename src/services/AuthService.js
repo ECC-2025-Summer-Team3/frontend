@@ -22,6 +22,7 @@ export const registerUser = async (nickname, email, password) => {
 
 // 3.로그아웃
 export const logoutUser = async () => {
+	console.log("Auth header:", http.defaults.headers.common.Authorization);
 	const res = await http.post("/auth/logout");
 	return res.data;
 };

@@ -1,4 +1,3 @@
-// const menu에서 라우팅 다시확인
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
