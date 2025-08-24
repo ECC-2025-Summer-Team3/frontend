@@ -44,7 +44,7 @@ export default CommentItem;
 
 const CommentContainer = styled.div`
 	display: flex;
-	border: 2px solid #d1d5db;
+	border: 0.1rem solid #d1d5db;
 	border-radius: 12px;
 	padding: 0.75rem 1rem;
 	gap: 1rem;

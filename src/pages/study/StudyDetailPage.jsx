@@ -31,19 +31,19 @@ const StudyDetailPage = () => {
 	const [draft, setDraft] = useState("");
 	const [saving, setSaving] = useState(false);
 
-  const [currentUserId, setCurrentUserId] = useState(null); 
+	const [currentUserId, setCurrentUserId] = useState(null);
 
 
 	useEffect(() => {
 		const loadData = async () => {
 			setIsLoading(true);
 			try {
-         // 현재 로그인 유저 id 가져오기
-        const meRes = await fetchMyPage();
-        setMe(meRes);
-        setCurrentUserId(Number(meRes.id));
+				// 현재 로그인 유저 id 가져오기
+				const meRes = await fetchMyPage();
+				setMe(meRes);
+				setCurrentUserId(Number(meRes.id));
 
-        // 게시글 + 댓글 조회
+				// 게시글 + 댓글 조회
 				const resPost = await fetchStudyPostById(id);
 				const resComments = await fetchStudyComments(id);
 				setPost(resPost);
@@ -206,7 +206,7 @@ export default StudyDetailPage;
 
 const PostBox = styled.div`
 	background-color: rgba(254, 245, 245, 0.56);
-	border: 3px solid rgba(217, 217, 217, 1);
+	border: 0.1rem solid rgba(217, 217, 217, 1);
 	border-radius: 15px;
 	min-height: 354px;
 	padding: 1.25rem 1rem;
@@ -220,14 +220,14 @@ const TitleRow = styled.div`
 	align-items: baseline;
 	gap: 0.5rem;
 	flex-wrap: wrap;
-  text-align: left;
+	text-align: left;
 `;
 
 const PostTitle = styled.h2`
+	margin: 0.5rem 1rem 0rem 1rem;
 	font-size: 1.5rem;
 	font-weight: 800;
 	line-height: 1.4;
-	margin: 0;
 `;
 
 const Nickname = styled.span`
@@ -236,7 +236,8 @@ const Nickname = styled.span`
 `;
 
 const PostContent = styled.div`
-	font-size: 0.875rem;
+	margin: 1rem;
+	font-size: 1rem;
 	font-weight: 300;
 	line-height: 1;
 	color: rgba(0, 0, 0, 1);

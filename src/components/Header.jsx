@@ -118,7 +118,7 @@ const Header = () => {
 						<MegaWrapper key={m.path}>
 							<NavItem
 								as="div"
-								$active={open}
+								$active={open || location.pathname.startsWith('/certifiinfo')}
 								role="button"
 								onMouseEnter={() => setOpen(true)}
 							>
@@ -171,7 +171,11 @@ const Header = () => {
 						<NavItem
 							key={m.path}
 							to={m.path}
-							$active={location.pathname.startsWith(m.path)}
+							$active={
+								m.path === "/"
+									? location.pathname === "/"
+									: location.pathname.startsWith(m.path)
+							}
 							onMouseEnter={() => setOpen(false)}
 						>
 							{m.label}
@@ -261,19 +265,7 @@ const LoginBtn = styled.button`
 	}
 `;
 
-const LogoutBtn = styled.button`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	background: none;
-	border: none;
-	font-size: 0.8rem;
-	cursor: pointer;
-	color: #333;
-	&:hover {
-		color: #000;
-	}
-`;
+const LogoutBtn = styled(LoginBtn)``;
 
 const MegaWrapper = styled.div``;
 
