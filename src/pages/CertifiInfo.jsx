@@ -7,21 +7,25 @@ import {
 	InfoContent,
 	OfficialLink,
 	BlankStar,
+	FilledStar,
 	TitleWrapper,
 } from "../styles/CertifiInfoStyle";
 import { useParams } from "react-router-dom";
 import { fetchCertificateDetail } from "../services/CertificateService";
 import { useEffect, useState } from "react";
+import { addFavorite, deleteFavorite } from "../services/FavoritesService";
 
 function CertifiInfo() {
 	const { certificateId } = useParams();
 	const [certificate, setCertificate] = useState(null);
+	const [isFavorited, setIsFavorited] = useState(false);
 
 	useEffect(() => {
 		(async () => {
 			try {
 				const data = await fetchCertificateDetail(certificateId);
 				setCertificate(data);
+				setIsFavorited(data.favorited);
 				console.log(data);
 			} catch (err) {
 				console.error(err);
@@ -29,11 +33,35 @@ function CertifiInfo() {
 		})();
 	}, [certificateId]);
 
+	const handleAddFavorite = async () => {
+		try {
+			const data = await addFavorite(certificateId);
+			setIsFavorited(true);
+			alert(data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const handleDeleteFavorite = async () => {
+		try {
+			setIsFavorited(false);
+			const data = await deleteFavorite(certificateId);
+			alert(data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<PageWrapper>
 			<TitleWrapper>
 				<InfoTitle>{certificate?.certificateName}</InfoTitle>
-				<BlankStar />
+				{isFavorited ? (
+					<FilledStar onClick={handleDeleteFavorite} />
+				) : (
+					<BlankStar onClick={handleAddFavorite} />
+				)}
 			</TitleWrapper>
 			<Blank />
 			<InfoText>시험개요</InfoText>
