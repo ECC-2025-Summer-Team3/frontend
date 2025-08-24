@@ -55,8 +55,8 @@ export const CalendarWrapper = styled.div`
 	.fc .fc-daygrid-day-frame {
 		display: flex;
 		flex-direction: column;
-		align-items: Center;
-		justify-content: center;
+		align-items: center;
+		min-height: 100px;
 		position: relative;
 	}
 
@@ -79,6 +79,7 @@ export const CalendarWrapper = styled.div`
 		height: 25px;
 		width: 100%;
 		border-radius: 0 !important;
+		margin-top: 5px;
 	}
 
 	.fc-event.fc-event-start {
@@ -95,13 +96,12 @@ export const CalendarWrapper = styled.div`
 		display: flex;
 		align-iems: center;
 		justify-content: flex-start;
-		height: 100%;
 	}
 
 	.fc-event-title {
 		font-size: 10px;
 		line-height: 2;
-		padding-left: 15px;
+		padding: 1px 10px;
 	}
 
 	.fc-event:not(.fc-event-start) .fc-event-title {
