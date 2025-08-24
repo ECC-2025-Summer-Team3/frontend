@@ -2,52 +2,56 @@ import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import { CalendarWrapper } from "../styles/CalendarStyle.jsx";
-import { useState, useEffect } from "react";
 import { fetchFavoritesSchedules } from "../services/CertificateService.js";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
 
 const Calendar = () => {
-	const [schedules, setSchedules] = useState([]);
-	const [y, setY] = useState(new Date().getFullYear());
-	const [m, setM] = useState(new Date().getMonth() + 1);
-	const calendarRef = useRef(null);
+	const [events, setEvents] = useState([]);
+	const today = new Date();
+	const [start, setStart] = useState(
+		new Date(today.getFullYear(), today.getMonth(), 1),
+	);
+	const [end, setEnd] = useState(
+		new Date(today.getFullYear(), today.getMonth() + 1, 0),
+	);
 
 	useEffect(() => {
-		const loadSchedules = async () => {
+		const fetchSchedules = async () => {
 			try {
-				const start = new Date(y, m, 1);
-				const end = new Date(y, m + 1, 0);
+				const data = await fetchFavoritesSchedules(
+					formatDate(start),
+					formatDate(end),
+				);
+				const event = data.map((schedule) => {
+					const end = new Date(schedule.endDate);
+					end.setDate(end.getDate() + 1);
 
-				const format = (date) =>
-					`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-						date.getDate(),
-					).padStart(2, "0")}`;
-
-				const data = await fetchFavoritesSchedules(format(start), format(end));
-				setSchedules(Array.isArray(data) ? data : []);
-			} catch (err) {
-				console.error("즐겨찾기 일정 조회 실패:", err.message);
+					return {
+						title: schedule.certificateName + " " + schedule.scheduleTypeName,
+						start: schedule.stratDate,
+						end: formatDate(end),
+					};
+				});
+				setEvents(event);
+				console.log(formatDate(start), formatDate(end));
+				console.log(data);
+			} catch (error) {
+				console.error(error);
 			}
 		};
-		loadSchedules();
-		console.log(y, m);
-		console.log(schedules);
-	}, [y, m]);
+		fetchSchedules();
+	}, [start, end]);
 
-	const events = schedules.map((s) => ({
-		title: `${s.certificateName} ${s.scheduleTypeName}`,
-		start: s.startDate,
-		end: s.endDate
-			? new Date(new Date(s.endDate).getTime() + 24 * 60 * 60 * 1000)
-					.toISOString()
-					.slice(0, 10)
-			: s.startDate,
-	}));
+	const formatDate = (date) => {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	};
 
 	return (
 		<CalendarWrapper>
 			<FullCalendar
-				ref={calendarRef}
 				plugins={[dayGridPlugin]}
 				initialView="dayGridMonth"
 				locale={"ko"}
@@ -66,25 +70,9 @@ const Calendar = () => {
 					return { html: String(arg.date.getDate()) };
 				}}
 				events={events}
-				customButtons={{
-					prev: {
-						click: () => {
-							calendarRef.current.getApi().prev(); // 달 이동
-							const start = calendarRef.current.getApi().view.currentStart;
-							setY(start.getFullYear());
-							if (start.getMonth() === 0) setM(1);
-							else setM(start.getMonth() + 1);
-						},
-					},
-					next: {
-						click: () => {
-							calendarRef.current.getApi().next(); // 달 이동
-							const start = calendarRef.current.getApi().view.currentStart;
-							setY(start.getFullYear());
-							if (start.getMonth() === 0) setM(1);
-							else setM(start.getMonth() + 1);
-						},
-					},
+				datesSet={function (arg) {
+					setStart(arg.view.currentStart);
+					setEnd(arg.view.currentEnd);
 				}}
 			/>
 		</CalendarWrapper>
