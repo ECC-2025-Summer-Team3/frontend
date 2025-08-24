@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { StarOutlined } from "@ant-design/icons";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 
 export const PageWrapper = styled.div`
 	width: 100%;
@@ -52,6 +52,14 @@ export const BlankStar = styled(StarOutlined)`
 	font-size: clamp(1.2rem, 4vw, 1.8rem);
 	color: rgb(255, 196, 0);
 	margin-left: 5px;
+	cursor: pointer;
+`;
+
+export const FilledStar = styled(StarFilled)`
+	font-size: clamp(1.2rem, 4vw, 1.8rem);
+	color: rgb(255, 196, 0);
+	margin-left: 5px;
+	cursor: pointer;
 `;
 
 export const TitleWrapper = styled.div`
