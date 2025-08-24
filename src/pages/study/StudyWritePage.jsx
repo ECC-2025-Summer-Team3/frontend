@@ -84,9 +84,9 @@ const StudyWritePage = () => {
 							<FormLabel>카테고리 선택</FormLabel>
 							<CategoryDropdown
 								options={categories}
-                selected={categoryId}                
-                onChange={(opt) => setCategoryId(opt.id)}
-                variant="pink"
+								selected={categoryId}
+								onChange={(opt) => setCategoryId(opt.id)}
+								variant="pink"
 							/>
 						</FormGroup>
 

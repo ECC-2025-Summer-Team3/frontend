@@ -59,37 +59,37 @@ export default CategoryDropdown;
 const DropdownContainer = styled.div`
 	position: relative;
 	width: 100%;
-	max-width: 340px;
+	max-width: 22rem;
 `;
 
 const DropdownButton = styled.button`
 	font-size: 1.25rem;
-	font-weight: 700;
+	font-weight: 600;
 	width: 100%;
-	height: 40px;
-	padding: 4px 12px;
+	min-height: 2.5rem;
+	padding: 0.25rem .75rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	border-radius: 12px;
+	border-radius: 1rem;
 
 	${(props) =>
 		props.$variant === "pink"
 			? css`
 					background-color: rgba(254, 245, 245, 1);
-					border: 1px solid rgba(0, 0, 0, 1);
+					border: 0.07rem solid rgba(0, 0, 0, 1);
 				`
 			: css`
 					background-color: white;
-					border: 3px solid #000000;
+					border: 0.1rem solid #000000;
 				`}
 `;
 
 const Arrow = styled.span`
-	font-size: 1.5rem;
+	font-size: 1.4rem;
 	position: absolute;
-	left: 1rem;
+	left: 1.3rem;
 `;
 
 const SelectedText = styled.span`
@@ -102,27 +102,27 @@ const DropdownList = styled.ul`
 	top: 100%;
 	left: 0;
 	width: 100%;
-	margin-top: 4px;
+	margin-top: 0.25rem;
 	padding: 0;
 	z-index: 10;
 	overflow: hidden;
-	border-radius: 12px;
+	border-radius: 1rem;
 
 	${(props) =>
 		props.$variant === "pink"
 			? css`
 					background-color: rgba(254, 245, 245, 1);
-					border: 1px solid rgba(0, 0, 0, 1);
+					border: 0.07rem solid rgba(0, 0, 0, 1);
 				`
 			: css`
 					background-color: white;
-					border: 3px solid #000000;
+					border: 0.1rem solid #000000;
 				`}
 `;
 
 const DropdownItem = styled.li`
 	font-size: 1.25rem;
-	font-weight: 700;
+	font-weight: 600;
 	padding: 10px 12px;
 	color: #000000;
 	text-align: center;
@@ -136,6 +136,6 @@ const DropdownItem = styled.li`
 	}
 
 	& + & {
-		border-top: 1px solid #000000;
+		border-top: 0.1rem solid #000000;
 	}
 `;
