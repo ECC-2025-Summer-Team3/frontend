@@ -134,3 +134,29 @@ export const UploadButton = styled.div`
 	margin-top: 10px;
 	cursor: pointer;
 `;
+
+export const NameText = styled.p`
+	font-size: 30px;
+	margin-top: 20px;
+	font-weight: 600;
+`;
+
+export const MyPageTitle = styled.p`
+	font-size: 20px;
+	border-bottom: 1px solid black;
+	padding: 10px 2px;
+	font-weight: 600;
+	width: 100%;
+	text-align: left;
+	margin-bottom: 10px;
+`;
+
+export const MyPageText = styled.p`
+	font-size: 15px;
+	font-weight: 600;
+	padding: 0 2px;
+	width: 100%;
+	text-align: left;
+	margin: 10px 0;
+	cursor: pointer;
+`;

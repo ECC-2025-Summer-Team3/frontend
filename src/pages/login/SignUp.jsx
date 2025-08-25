@@ -10,7 +10,7 @@ import {
 	InputText,
 	OverlapButton,
 	JoinButton,
-} from "../../styles/LoginStyle.jsx";
+} from "../../styles/UserStyle.jsx";
 import { useState } from "react";
 import { Avatar, Upload } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
