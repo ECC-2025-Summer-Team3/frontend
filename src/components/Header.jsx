@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, matchPath } from "react-router-dom";
 import { fetchCertificatesByCategory } from "../services/CertificateService";
 import { fetchCategories } from "../services/CategoryService";
 import {
 	UsergroupDeleteOutlined,
 	UsergroupAddOutlined,
 } from "@ant-design/icons";
+import certif_logo from "../assets/certif_logo.png";
 import { logoutUser } from "../services/AuthService";
 import http from "../utils/http";
 
@@ -73,10 +74,14 @@ const Header = () => {
 		return () => (document.body.style.overflow = "");
 	}, [open]);
 
-	// 라우팅 다시 확인!
 	const menu = [
 		{ path: "/", label: "시험 일정" }, //Route 다시 확인
-		{ path: "/certifiinfo", label: "자격증", isOpen: true }, //Route 다시 확인
+		{
+			path: "/certifiinfo",
+			label: "자격증",
+			isOpen: true,
+			openOnly: true,
+		}, //Route 다시 확인
 		{ path: "/study/default", label: "스터디 모집" },
 		{ path: "/share/default", label: "공유마당" },
 		{ path: "/mypage", label: "마이 페이지" },
@@ -108,19 +113,35 @@ const Header = () => {
 		}
 	};
 
+	const activePatternOf = (path) => {
+		if (path === "/") return "/";
+		const root = "/" + path.split("/")[1];
+		return `${root}/*`;
+	};
+	const isActive = (path) => {
+		const pattern = activePatternOf(path);
+		return pattern === "/"
+			? location.pathname === "/"
+			: !!matchPath(pattern, location.pathname);
+	};
+
 	return (
 		<Bar>
-			<Logo onMouseEnter={() => setOpen(false)}>Certif</Logo>
+			<Logo to="/" onMouseEnter={() => setOpen(false)}>
+				<img src={certif_logo} alt="Certif logo" />
+			</Logo>
 
 			<Nav>
 				{menu.map((m) =>
 					m.isOpen ? (
 						<MegaWrapper key={m.path}>
 							<NavItem
-								as="div"
-								$active={open || location.pathname.startsWith('/certifiinfo')}
+								as={Link}
+								to={m.path}
 								role="button"
+								$active={open || isActive(m.path)}
 								onMouseEnter={() => setOpen(true)}
+								onClick={m.openOnly ? (e) => { e.preventDefault(); setOpen(v => !v); } : undefined}
 							>
 								{m.label}
 							</NavItem>
@@ -171,11 +192,7 @@ const Header = () => {
 						<NavItem
 							key={m.path}
 							to={m.path}
-							$active={
-								m.path === "/"
-									? location.pathname === "/"
-									: location.pathname.startsWith(m.path)
-							}
+							$active={isActive(m.path)}
 							onMouseEnter={() => setOpen(false)}
 						>
 							{m.label}
@@ -205,34 +222,39 @@ const Bar = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0px 20px 18px;
+	padding: 0 1rem 0.6rem;
 	border-bottom: 1px solid #e5e7eb;
 	background: #fff;
 	position: sticky;
 	top: 0;
 	z-index: 100;
 	height: clamp(2.5rem, 4vw, 3rem);
+	overflow: visible;
 `;
 
 const Logo = styled.div`
-	font-family: "Inter", sans-serif;
-	font-size: clamp(2rem, 3vw, 2.5rem);
-	transition: font-size 0.5s ease;
-	font-size: clamp(2rem, 3vw, 2.5rem);
-	transition: font-size 0.5s ease;
-	font-weight: 700;
-	color: #000;
+	display: flex;
+	align-items: center;
+	height: clamp(40px, 7vw, 56px);  
+	line-height: 0;
+	text-decoration: none;
 	cursor: pointer;
-	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	img {
+		height: 100%;
+		width: auto;
+		display: block;
+		transform: scale(1.6);
+		transform-origin: left center;
+	}
 `;
 
 const Nav = styled.nav`
 	display: flex;
 	flex: 1;
 	justify-content: center;
+	align-items: center;
 	gap: clamp(16px, 5vw, 50px);
 	z-index: 40;
-	white-space: nowrap;
 	white-space: nowrap;
 `;
 
@@ -270,8 +292,8 @@ const LogoutBtn = styled(LoginBtn)``;
 const MegaWrapper = styled.div``;
 
 const MegaPanel = styled.div`
-	position: fixed;
-	top: clamp(2rem, 10vh, 6rem);
+	position: absolute;
+	top: calc(100% + 5px);
 	left: 50%;
 	transform: translateX(-50%);
 	width: min(1100px, calc(100% - 48px));
