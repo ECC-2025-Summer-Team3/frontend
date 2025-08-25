@@ -69,26 +69,32 @@ const ShareListPage = () => {
 		})();
 	}, [categoryId]);
 
-    // 선택된 카테고리가 바뀔 때마다 게시글 불러오기
-        useEffect(() => {
-            (async () => {
-                try {
-                    setLoading(true);
-                    const raw = cat?.id
-                        ? await fetchShareByCategory(cat.id)
-                        : await fetchShareDefault();
-                    const list = Array.isArray(raw) ? raw : (raw?.data ?? []);
-                    setPosts(normalizePosts(list));
-                } catch (e) {
-                    console.error("게시글을 불러오지 못했습니다.", e);
-                    setPosts([]);
-                } finally {
-                    setLoading(false);
-                }
-            })();
-        }, [cat]);
+	// 선택된 카테고리가 바뀔 때마다 게시글 불러오기
+	useEffect(() => {
+		(async () => {
+			try {
+				setLoading(true);
+				const raw = cat?.id
+					? await fetchShareByCategory(cat.id)
+					: await fetchShareDefault();
+				const list = Array.isArray(raw) ? raw : (raw?.data ?? []);
+				setPosts(
+					normalizePosts(list).sort(
+						(a, b) =>
+							new Date(b.createdAt || 0) - new Date(a.createdAt || 0) ||
+							b.id - a.id,
+					),
+				);
+			} catch (e) {
+				console.error("게시글을 불러오지 못했습니다.", e);
+				setPosts([]);
+			} finally {
+				setLoading(false);
+			}
+		})();
+	}, [cat]);
 
-    //State -> URL
+	//State -> URL
 	const handleChangeCategory = (nextCat) => {
 		setCat(nextCat);
 		if (nextCat?.id) {
@@ -97,7 +103,6 @@ const ShareListPage = () => {
 			navigate(`/share/default`);
 		}
 	};
-    
 
 	return (
 		<>

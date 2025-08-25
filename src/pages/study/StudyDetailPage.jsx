@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
 	fetchStudyPostById,
 	fetchStudyComments,
 	createStudyComment,
 	updateStudyComment,
 	deleteStudyComment,
+	updateStudyPost,
+	deleteStudyPost,
 } from "../../services/StudyService";
 import { fetchMyPage } from "../../services/UserService";
 import CommentItem from "../../components/community/CommentItem";
@@ -20,6 +22,7 @@ import styled from "styled-components";
 const StudyDetailPage = () => {
 	const { postId } = useParams();
 	const id = Number(postId);
+	const navigate = useNavigate();
 
 	const [me, setMe] = useState(null);
 	const [post, setPost] = useState(null);
@@ -31,8 +34,10 @@ const StudyDetailPage = () => {
 	const [draft, setDraft] = useState("");
 	const [saving, setSaving] = useState(false);
 
-	const [currentUserId, setCurrentUserId] = useState(null);
+	const [editingPost, setEditingPost] = useState(false);
+	const [postDraft, setPostDraft] = useState({ title: "", content: "" });
 
+	const [currentUserId, setCurrentUserId] = useState(null);
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -57,6 +62,15 @@ const StudyDetailPage = () => {
 		};
 		loadData();
 	}, [id]);
+
+	useEffect(() => {
+		if (post) {
+			setPostDraft({
+				title: post.title ?? "",
+				content: post.content ?? "",
+			});
+		}
+	}, [post]);
 
 	const handleCommentSubmit = async () => {
 		if (!newComment.trim()) return;
@@ -120,6 +134,62 @@ const StudyDetailPage = () => {
 		}
 	};
 
+	const isOwner =
+		currentUserId != null &&
+		Number(post?.userId ?? post?.user?.id) === Number(currentUserId);
+
+	const startPostEdit = () => {
+		if (!isOwner) return;
+		setEditingPost(true);
+	};
+
+	const cancelPostEdit = () => {
+		setEditingPost(false);
+		setPostDraft({
+			title: post?.title ?? "",
+			content: post?.content ?? "",
+		});
+	};
+
+	const savePostEdit = async () => {
+		const payload = {
+			title: (postDraft.title ?? "").trim(),
+			content: (postDraft.content ?? "").trim(),
+		};
+		if (!payload.title || !payload.content) {
+			alert("제목과 내용을 입력하세요.");
+			return;
+		}
+		try {
+			setSaving(true);
+			const updated = await updateStudyPost(id, payload);
+			setPost(updated);
+			setEditingPost(false);
+			alert("수정 완료!");
+		} catch (e) {
+			console.error(e);
+			alert("게시글 수정 실패");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	const removePost = async () => {
+		if (!isOwner) return;
+		if (!window.confirm("정말 삭제하시겠습니까?")) return;
+		try {
+			setSaving(true);
+			await deleteStudyPost(id);
+			alert("삭제되었습니다.");
+			navigate("/study/default");
+		} catch (e) {
+			console.error(e);
+			alert("게시글 삭제 실패");
+		} finally {
+			setSaving(false);
+		}
+	};
+
 	if (isLoading) {
 		return (
 			<PageWrapper>
@@ -134,16 +204,59 @@ const StudyDetailPage = () => {
 		<>
 			<CommunityBaseStyle />
 			<PageWrapper>
+				{" "}
 				<PostBox>
 					<TitleRow>
-						<PostTitle>{post?.title}</PostTitle>
-						<Nickname>{post?.nickname ?? "익명"}</Nickname>
+						<LeftGroup>
+							{!editingPost ? (
+								<PostTitle>{post?.title}</PostTitle>
+							) : (
+								<PostInput
+									value={postDraft.title}
+									onChange={(e) =>
+										setPostDraft((s) => ({ ...s, title: e.target.value }))
+									}
+									placeholder="제목"
+								/>
+							)}
+							<Nickname>{post?.nickname ?? "익명"}</Nickname>
+						</LeftGroup>
+
+						{isOwner && (
+							<RightActions $floating={!editingPost}>
+								{!editingPost ? (
+									<>
+										<ActionLink onClick={startPostEdit}>수정</ActionLink>
+										<ActionLink onClick={removePost}>삭제</ActionLink>
+									</>
+								) : (
+									<>
+										<ActionLink onClick={savePostEdit} disabled={saving}>
+											저장
+										</ActionLink>
+										<ActionLink onClick={cancelPostEdit} disabled={saving}>
+											취소
+										</ActionLink>
+									</>
+								)}
+							</RightActions>
+						)}
 					</TitleRow>
-					<PostContent>{post?.content}</PostContent>
+
+					{!editingPost ? (
+						<PostContent>{post?.content}</PostContent>
+					) : (
+						<PostTextarea
+							rows={10}
+							value={postDraft.content}
+							onChange={(e) =>
+								setPostDraft((s) => ({ ...s, content: e.target.value }))
+							}
+							placeholder="내용을 입력하세요"
+						/>
+					)}
 				</PostBox>
-
 				<Divider />
-
 				<CommentList>
 					{comments.map((cmt) => {
 						const isMine = Number(cmt.userId) === Number(currentUserId);
@@ -187,7 +300,6 @@ const StudyDetailPage = () => {
 						);
 					})}
 				</CommentList>
-
 				<CommentInputBox>
 					<span style={{ marginRight: "0.5rem", fontSize: "1.2rem" }}>💬</span>
 					<StyledInput
@@ -213,26 +325,57 @@ const PostBox = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 0.75rem;
+	position: relative;
 `;
 
 const TitleRow = styled.div`
+	position: relative;
 	display: flex;
 	align-items: baseline;
-	gap: 0.5rem;
-	flex-wrap: wrap;
-	text-align: left;
+	gap: 8px;
+	padding: 0.25rem 0.75rem 0 1rem;
+	flex-wrap: nowrap;
+`;
+
+const LeftGroup = styled.div`
+	display: inline-flex;
+	align-items: baseline;
+	gap: 8px;
+	min-width: 0;
+	flex: 1 1 auto;
 `;
 
 const PostTitle = styled.h2`
-	margin: 0.5rem 1rem 0rem 1rem;
+	margin: 0.5rem 0 0 0;
 	font-size: 1.5rem;
 	font-weight: 800;
-	line-height: 1.4;
+	line-height: 1.35;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 `;
 
 const Nickname = styled.span`
 	font-size: 1rem;
 	color: #6b7280;
+`;
+
+const RightActions = styled.div`
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+	white-space: nowrap;
+	color: #6b7280;
+	${({ $floating }) =>
+		$floating
+			? `
+        position: absolute;
+        right: 14px;
+        top: 16px;           
+      `
+			: `
+        margin-left: auto;     
+      `}
 `;
 
 const PostContent = styled.div`
@@ -307,4 +450,40 @@ const EditHeader = styled.div`
 const EditActions = styled.div`
 	display: flex;
 	gap: 0.5rem;
+`;
+
+const ActionLink = styled.button`
+	border: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	line-height: 1.2;
+	&:hover {
+		text-decoration: underline;
+	}
+	&:disabled {
+		opacity: 0.6;
+		cursor: default;
+	}
+`;
+
+const PostInput = styled.input`
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 8px 10px;
+	font-size: 1rem;
+	flex: 1 1 420px;
+	min-width: 240px;
+`;
+
+const PostTextarea = styled.textarea`
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 10px 12px;
+	font-size: 1rem;
+	margin: 1rem;
+	line-height: 1.6;
+	resize: vertical;
 `;
