@@ -24,13 +24,14 @@ function App() {
 			<Routes>
 				{/* AuthLayout: 헤더 없는 페이지 */}
 				<Route element={<AuthLayout />}>
+					<Route path="/" element={<Login />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/signup" element={<SignUp />} />
 				</Route>
 
 				{/* MainLayout: 헤더 있는 페이지 */}
 				<Route element={<MainLayout />}>
-					<Route path="/" element={<Home />} />
+					<Route path="/home" element={<Home />} />
 					<Route path="/certifiinfo/:certificateId" element={<CertifiInfo />} />
 
 					{/* Study */}

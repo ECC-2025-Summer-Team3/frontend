@@ -75,7 +75,7 @@ const Header = () => {
 	}, [open]);
 
 	const menu = [
-		{ path: "/", label: "시험 일정" }, //Route 다시 확인
+		{ path: "/home", label: "시험 일정" }, //Route 다시 확인
 		{
 			path: "/certifiinfo",
 			label: "자격증",
