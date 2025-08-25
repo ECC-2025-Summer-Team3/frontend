@@ -16,7 +16,7 @@ import {
 	RightLinks,
 	Divide,
 	SignButton,
-} from "../../styles/LoginStyle";
+} from "../../styles/UserStyle";
 import { loginUser } from "../../services/AuthService";
 
 function Login() {

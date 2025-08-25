@@ -17,6 +17,7 @@ import Login from "./pages/login/Login.jsx";
 import Home from "./pages/Home.jsx";
 import SignUp from "./pages/login/SignUp.jsx";
 import CertifiInfo from "./pages/CertifiInfo.jsx";
+import MyPage from "./pages/user/MyPage.jsx";
 
 function App() {
 	return (
@@ -33,7 +34,6 @@ function App() {
 				<Route element={<MainLayout />}>
 					<Route path="/home" element={<Home />} />
 					<Route path="/certifiinfo/:certificateId" element={<CertifiInfo />} />
-
 					{/* Study */}
 					<Route path="/study">
 						<Route index element={<StudyWritePage />} />
@@ -41,7 +41,6 @@ function App() {
 						<Route path="category/:categoryId" element={<StudyListPage />} />
 						<Route path=":postId" element={<StudyDetailPage />} />
 					</Route>
-
 					{/* Share */}
 					<Route path="/share">
 						<Route index element={<ShareWritePage />} />
@@ -49,8 +48,8 @@ function App() {
 						<Route path="category/:categoryId" element={<ShareListPage />} />
 						<Route path="posts/:postId" element={<ShareDetailPage />} />
 					</Route>
-
 					{/* User */}
+					<Route path="/user/mypage" element={<MyPage />} />{" "}
 					<Route path="/user/my-posts" element={<MyPostsPage />} />
 					<Route
 						path="/user/my-posts/:type/:postId"

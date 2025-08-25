@@ -84,7 +84,7 @@ const Header = () => {
 		}, //Route 다시 확인
 		{ path: "/study/default", label: "스터디 모집" },
 		{ path: "/share/default", label: "공유마당" },
-		{ path: "/mypage", label: "마이 페이지" },
+		{ path: "/user/mypage", label: "마이 페이지" },
 	];
 
 	const handleLogin = () => {
@@ -141,7 +141,14 @@ const Header = () => {
 								role="button"
 								$active={open || isActive(m.path)}
 								onMouseEnter={() => setOpen(true)}
-								onClick={m.openOnly ? (e) => { e.preventDefault(); setOpen(v => !v); } : undefined}
+								onClick={
+									m.openOnly
+										? (e) => {
+												e.preventDefault();
+												setOpen((v) => !v);
+											}
+										: undefined
+								}
 							>
 								{m.label}
 							</NavItem>
@@ -235,7 +242,7 @@ const Bar = styled.header`
 const Logo = styled.div`
 	display: flex;
 	align-items: center;
-	height: clamp(40px, 7vw, 56px);  
+	height: clamp(40px, 7vw, 56px);
 	line-height: 0;
 	text-decoration: none;
 	cursor: pointer;
