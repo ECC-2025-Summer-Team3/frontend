@@ -43,7 +43,7 @@ function Login() {
 				localStorage.setItem("email", Id);
 				localStorage.setItem("password", Pw);
 			}
-			navigate("/");
+			navigate("/home");
 			console.log("로그인 성공", data);
 		} catch (err) {
 			console.log("로그인 실패:", err);
