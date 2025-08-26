@@ -6,7 +6,8 @@ export const PageWrapper = styled.div`
 	flex-direction: column;
 	width: 40%;
 	margin: 0 auto;
-	align-items: center;
+	justify-content: center;
+	height: 100vh;
 	min-width: ${(props) => props.minWidth || "400px"};
 `;
 

@@ -18,6 +18,8 @@ import Home from "./pages/Home.jsx";
 import SignUp from "./pages/login/SignUp.jsx";
 import CertifiInfo from "./pages/CertifiInfo.jsx";
 import MyPage from "./pages/user/MyPage.jsx";
+import ChangePw from "./pages/user/ChangePw.jsx";
+import MyFavoriteEditPage from "./pages/user/MyFavoriteEditPage.jsx";
 
 function App() {
 	return (
@@ -49,7 +51,9 @@ function App() {
 						<Route path="posts/:postId" element={<ShareDetailPage />} />
 					</Route>
 					{/* User */}
-					<Route path="/user/mypage" element={<MyPage />} />{" "}
+					<Route path="/user/mypage" element={<MyPage />} />
+					<Route path="/user/changepw" element={<ChangePw />} />
+					<Route path="/user/myfavoriteedit" element={<MyFavoriteEditPage />} />
 					<Route path="/user/my-posts" element={<MyPostsPage />} />
 					<Route
 						path="/user/my-posts/:type/:postId"
