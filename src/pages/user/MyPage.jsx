@@ -48,7 +48,13 @@ function MyPage() {
 			<NameText>user name</NameText>
 			<MyPageTitle>회원정보</MyPageTitle>
 			<MyPageText style={{ cursor: "default" }}>아이디(이메일): </MyPageText>
-			<MyPageText>비밀번호 변경</MyPageText>
+			<MyPageText
+				onClick={() => {
+					navigate("/user/changepw");
+				}}
+			>
+				비밀번호 변경
+			</MyPageText>
 			<Blank />
 			<MyPageTitle>활동기록</MyPageTitle>
 			<MyPageText
@@ -67,7 +73,13 @@ function MyPage() {
 			</MyPageText>
 			<Blank />
 			<MyPageTitle></MyPageTitle>
-			<MyPageText>즐겨찾기 수정</MyPageText>
+			<MyPageText
+				onClick={() => {
+					navigate("/user/myfavoriteedit");
+				}}
+			>
+				즐겨찾기 수정
+			</MyPageText>
 		</PageWrapper>
 	);
 }
