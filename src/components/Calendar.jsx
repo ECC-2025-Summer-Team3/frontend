@@ -14,6 +14,20 @@ const Calendar = () => {
 	const [end, setEnd] = useState(
 		new Date(today.getFullYear(), today.getMonth() + 1, 0),
 	);
+	const colors = [
+		["#F15F5F", "#ffffff"],
+		["#F29661", "#000000"],
+		["#FFBB00", "#000000"],
+		["#00A500", "#ffffff"],
+		["#5AAEFF", "#ffffff"],
+		["#B95AFF", "#ffffff"],
+		["#FFB2D9", "#000000"],
+	];
+
+	const getRandomColor = (id) => {
+		const idx = id % colors.length;
+		return colors[idx];
+	};
 
 	useEffect(() => {
 		const fetchSchedules = async () => {
@@ -25,16 +39,16 @@ const Calendar = () => {
 				const event = data.map((schedule) => {
 					const end = new Date(schedule.endDate);
 					end.setDate(end.getDate() + 1);
-
+					const c = getRandomColor(schedule.scheduleId);
 					return {
 						title: schedule.certificateName + " " + schedule.scheduleTypeName,
 						start: schedule.stratDate,
 						end: formatDate(end),
+						backgroundColor: c[0],
+						textColor: c[1],
 					};
 				});
 				setEvents(event);
-				console.log(formatDate(start), formatDate(end));
-				console.log(data);
 			} catch (error) {
 				console.error(error);
 			}
