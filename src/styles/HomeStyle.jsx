@@ -1,4 +1,3 @@
-import React from "react";
 import { FaSearch } from "react-icons/fa";
 import styled from "styled-components";
 
@@ -13,6 +12,8 @@ export const SearchWrapper = styled.div`
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
+	position: relative;
+	margin: 10px 0 20px 0;
 `;
 
 export const CalendarWrapper = styled.div`
@@ -21,12 +22,12 @@ export const CalendarWrapper = styled.div`
 	justify-content: center;
 `;
 
-const SearchBar = styled.div`
+export const SearchBar = styled.div`
 	position: relative;
-	width: 190px;
+	width: 200px;
 `;
 
-const SearchIcon = styled(FaSearch)`
+export const SearchIcon = styled(FaSearch)`
 	position: absolute;
 	top: 50%;
 	left: 5px;
@@ -36,7 +37,7 @@ const SearchIcon = styled(FaSearch)`
 	font-size: 25px;
 `;
 
-const SearchInput = styled.input`
+export const SearchInput = styled.input`
 	&::placeholder {
 		color: rgb(111, 111, 111) !important;
 		opacity: 1;
@@ -49,14 +50,7 @@ const SearchInput = styled.input`
 	padding-right: 10px;
 	font-size: 10px;
 	font-weight: bold;
-	margin: 20px 0;
+	margin: 0;
 	width: 100%;
 	border: none;
 `;
-
-export const Search = () => (
-	<SearchBar>
-		<SearchIcon />
-		<SearchInput placeholder="원하시는 자격증을 검색해 보세요" />
-	</SearchBar>
-);

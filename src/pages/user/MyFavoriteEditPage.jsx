@@ -17,13 +17,33 @@ function MyFavoriteEditPage() {
 		(async () => {
 			try {
 				const data = await fetchFavorite();
-				setFavorites(data);
-				console.log(data);
+				const f = data.map((e) => ({ ...e, isFavorited: true }));
+				console.log(f);
+				setFavorites(f);
 			} catch (e) {
 				console.error(e);
 			}
 		})();
 	}, []);
+
+	const handleFilledStar = async (id) => {
+		await deleteFavorite(id);
+		setFavorites((prev) =>
+			prev.map((item) =>
+				item.certificateId === id ? { ...item, isFavorited: false } : item,
+			),
+		);
+	};
+
+	const handleEmptyStar = async (id) => {
+		await addFavorite(id);
+		setFavorites((prev) =>
+			prev.map((item) =>
+				item.certificateId === id ? { ...item, isFavorited: true } : item,
+			),
+		);
+		console.log(favorites);
+	};
 
 	return (
 		<PageWrapper>
@@ -34,7 +54,13 @@ function MyFavoriteEditPage() {
 						favorites.map((f) => (
 							<FavoriteList key={f.certificateId}>
 								<FavoriteName>{f.certificateName}</FavoriteName>
-								<FilledStar />
+								{f.isFavorited ? (
+									<FilledStar
+										onClick={() => handleFilledStar(f.certificateId)}
+									/>
+								) : (
+									<EmptyStar onClick={() => handleEmptyStar(f.certificateId)} />
+								)}
 							</FavoriteList>
 						))}
 				</FormWrapper>
