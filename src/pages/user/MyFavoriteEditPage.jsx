@@ -3,17 +3,40 @@ import styled from "styled-components";
 import { PageWrapper } from "../../styles/CommunityStyle";
 import { Header } from "../../styles/CommunityStyle";
 import { StarFilled } from "@ant-design/icons";
+import {
+	fetchFavorite,
+	addFavorite,
+	deleteFavorite,
+} from "../../services/FavoritesService";
+import { useState, useEffect } from "react";
 
 function MyFavoriteEditPage() {
+	const [favorites, setFavorites] = useState([]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const data = await fetchFavorite();
+				setFavorites(data);
+				console.log(data);
+			} catch (e) {
+				console.error(e);
+			}
+		})();
+	}, []);
+
 	return (
 		<PageWrapper>
 			<Header>즐겨찾기 수정</Header>
 			<ContentBox>
 				<FormWrapper>
-					<FavoriteList>
-						<FavoriteName>즐겨찾기</FavoriteName>
-						<EmptyStar />
-					</FavoriteList>
+					{Array.isArray(favorites) &&
+						favorites.map((f) => (
+							<FavoriteList key={f.certificateId}>
+								<FavoriteName>{f.certificateName}</FavoriteName>
+								<FilledStar />
+							</FavoriteList>
+						))}
 				</FormWrapper>
 			</ContentBox>
 		</PageWrapper>
@@ -37,6 +60,7 @@ const FavoriteList = styled.div`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
+	margin-bottom: 15px;
 `;
 
 const FavoriteName = styled.p`
@@ -48,7 +72,7 @@ const FavoriteName = styled.p`
 	margin: 0;
 `;
 
-export const EmptyStar = styled(StarFilled)`
+const EmptyStar = styled(StarFilled)`
 	font-size: 25px;
 	color: rgb(110, 110, 110);
 
@@ -57,7 +81,7 @@ export const EmptyStar = styled(StarFilled)`
 	lign-height: 1;
 `;
 
-export const FilledStar = styled(StarFilled)`
+const FilledStar = styled(StarFilled)`
 	font-size: 25px;
 	color: rgb(255, 196, 0);
 

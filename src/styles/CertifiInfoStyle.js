@@ -33,7 +33,6 @@ export const InfoText = styled.h2`
 export const InfoContent = styled.p`
 	font-size: clamp(0.5rem, 1.5vw, 1rem);
 	transition: font-size 0.2s ease;
-	padding-bottom: 15px;
 	text-align: left;
 	color: black;
 `;

@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "antd/dist/reset.css";
 import { useNavigate } from "react-router-dom";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import {
 	PageWrapper,
 	Title,
@@ -17,11 +18,13 @@ import {
 	Divide,
 	SignButton,
 } from "../../styles/UserStyle";
+import styled from "styled-components";
 import { loginUser } from "../../services/AuthService";
 
 function Login() {
 	const [Id, setId] = useState("");
 	const [Pw, setPw] = useState("");
+	const [isOpen, setIsOpen] = useState(false);
 	const [checked, setChecked] = useState(false);
 
 	const isEnabled = Id.trim() !== "" && Pw.trim() !== "";
@@ -37,7 +40,6 @@ function Login() {
 			const data = await loginUser({ email: Id, password: Pw }); // email/password 전달
 			localStorage.setItem("token", data.accessToken);
 			// 로그인 성공 시: 토큰은 localStorage에 저장
-			localStorage.setItem("token", data.accessToken);
 			window.dispatchEvent(new Event("auth-changed"));
 			if (checked) {
 				localStorage.setItem("email", Id);
@@ -106,11 +108,68 @@ function Login() {
 			</WidthWrapper>
 			<Divide />
 			<WidthWrapper>
-				<InstText>처음이신가요?</InstText>
+				<InstText
+					onClick={() => {
+						setIsOpen(true);
+					}}
+					style={{ cursor: "pointer" }}
+				>
+					처음이신가요?
+				</InstText>
 				<SignButton onClick={handleSignupBtn}>회원가입</SignButton>
+				{isOpen && (
+					<ModalBackground>
+						<ModalBox>
+							<CloseButton
+								onClick={() => {
+									setIsOpen(false);
+								}}
+							>
+								x
+							</CloseButton>
+							<Blank />
+							<Blank />
+							<p>안녕하세요.</p>
+							<Blank />
+							<p>Certif는 자격증을 뜻하는 Certificate와 Surf의 합성어로</p>
+							<Blank />
+							<p>자격증에 대한 모든 정보를 모아놨습니다.</p>
+							<Blank />
+							<p>Certif에서 자유롭게 헤엄치세요!🌊🏄</p>
+						</ModalBox>
+					</ModalBackground>
+				)}
 			</WidthWrapper>
 		</PageWrapper>
 	);
 }
 
 export default Login;
+
+const ModalBackground = styled.div`
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+const ModalBox = styled.div`
+	display: flex;
+	background: white;
+	padding: 20px 30px;
+	width: 500px;
+	height: 350px;
+	border-radius: 12px;
+	flex-direction: column;
+	box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+`;
+
+const CloseButton = styled(CloseCircleOutlined)`
+	color: #aeaeae;
+	cursor: pointer;
+	align-items: flex-start;
+	justify-content: flex-end;
+`;

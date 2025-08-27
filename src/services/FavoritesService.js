@@ -11,3 +11,9 @@ export const deleteFavorite = async (certificateId) => {
 	const res = await http.delete(`/favorites/${certificateId}`);
 	return res.data;
 };
+
+//3. 즐겨찾기 조회
+export const fetchFavorite = async () => {
+	const res = await http.get("/favorites");
+	return res.data;
+};

@@ -11,22 +11,28 @@ import {
 	TitleWrapper,
 } from "../styles/CertifiInfoStyle";
 import { useParams } from "react-router-dom";
-import { fetchCertificateDetail } from "../services/CertificateService";
+import {
+	fetchCertificateDetail,
+	fetchCertificatesSchedule,
+} from "../services/CertificateService";
 import { useEffect, useState } from "react";
 import { addFavorite, deleteFavorite } from "../services/FavoritesService";
 
 function CertifiInfo() {
 	const { certificateId } = useParams();
 	const [certificate, setCertificate] = useState(null);
+	const [schedules, setSchedules] = useState([]);
 	const [isFavorited, setIsFavorited] = useState(false);
 
 	useEffect(() => {
 		(async () => {
 			try {
 				const data = await fetchCertificateDetail(certificateId);
+				const schedule = await fetchCertificatesSchedule(certificateId);
 				setCertificate(data);
 				setIsFavorited(data.favorited);
-				console.log(data);
+				setSchedules(schedule);
+				console.log(schedule);
 			} catch (err) {
 				console.error(err);
 			}
@@ -66,6 +72,13 @@ function CertifiInfo() {
 			<Blank />
 			<InfoText>시험개요</InfoText>
 			<InfoContent>{certificate?.overview}</InfoContent>
+			<Blank />
+			<InfoText>시험일정</InfoText>
+			{schedules.map((s) => (
+				<InfoContent key={s.scheduleId}>
+					{s.scheduleTypeName} : {s.stratDate} ~ {s.endDate}
+				</InfoContent>
+			))}
 			<Blank />
 			<InfoText>시행기관</InfoText>
 			<InfoContent>{certificate?.organization}</InfoContent>
