@@ -9,12 +9,14 @@ import {
 	Blank,
 } from "../../styles/UserStyle.jsx";
 import { Avatar, Upload } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import { fetchMyPage } from "../../services/UserService.js";
 
 function MyPage() {
 	const [img, setImg] = useState(null);
+	const [email, setEmail] = useState("");
 	const navigate = useNavigate();
 
 	const getBase64 = (file, callback) => {
@@ -31,9 +33,22 @@ function MyPage() {
 			});
 		}
 	};
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const data = await fetchMyPage();
+				setEmail(data.email);
+				setImg(data.profileImage);
+			} catch (e) {
+				console.error(e);
+			}
+		})();
+	}, []);
+
 	return (
 		<PageWrapper>
-			<ProfileWrapper style={{ "margin-top": "100px" }}>
+			<ProfileWrapper>
 				<Avatar size={100} icon={!img && <UserOutlined />} src={img} />
 				<Upload
 					showUploadList={false}
@@ -47,7 +62,9 @@ function MyPage() {
 			</ProfileWrapper>
 			<NameText>user name</NameText>
 			<MyPageTitle>회원정보</MyPageTitle>
-			<MyPageText style={{ cursor: "default" }}>아이디(이메일): </MyPageText>
+			<MyPageText style={{ cursor: "default" }}>
+				아이디(이메일): {email}
+			</MyPageText>
 			<MyPageText
 				onClick={() => {
 					navigate("/user/changepw");

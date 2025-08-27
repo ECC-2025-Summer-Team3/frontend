@@ -7,6 +7,7 @@ export const PageWrapper = styled.div`
 	width: 40%;
 	margin: 0 auto;
 	justify-content: center;
+	align-items: center;
 	height: 100vh;
 	min-width: ${(props) => props.minWidth || "400px"};
 `;
@@ -66,6 +67,10 @@ export const JoinButton = styled(OverlapButton)`
 	height: 40px;
 	font-size: 15px;
 	width: 100px;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 0;
 `;
 
 export const Blank = styled.div`
@@ -129,6 +134,7 @@ export const SignButton = styled(Button)`
 export const ProfileWrapper = styled.div`
 	display: flex;
 	align-items: end;
+	justify-content: center;
 `;
 
 export const UploadButton = styled.div`
@@ -160,4 +166,20 @@ export const MyPageText = styled.p`
 	text-align: left;
 	margin: 10px 0;
 	cursor: pointer;
+`;
+
+export const RedMsg = styled.p`
+	color: red;
+	width: 100%;
+	font-size: 10px;
+	text-align: left;
+	padding-left: 5px;
+`;
+
+export const GreenMsg = styled.p`
+	color: green;
+	width: 100%;
+	font-size: 10px;
+	text-align: left;
+	padding-left: 5px;
 `;

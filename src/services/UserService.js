@@ -4,7 +4,16 @@ import http from "../utils/http";
 export const fetchMyPage = async () => {
 	const res = await http.get("/user/my-page");
 	return res.data;
-}
+};
+
+// 비밀번호 재설정
+export const resetPassword = async (newPassword) => {
+	const res = await http.post("/user/reset-password", {
+		token: localStorage.getItem("token"),
+		newPassword: newPassword,
+	});
+	return res.data;
+};
 
 /* UserCommentService */
 
@@ -27,7 +36,10 @@ export const fetchUserCommentById = async (type, commentId) => {
 export const updateUserComment = async (type, commentId, content) => {
 	if (!type || commentId == null)
 		throw new Error("type과 commentId가 필요합니다.");
-	const res = await http.patch(`/user/my-comments/${type}/${commentId}`, content);
+	const res = await http.patch(
+		`/user/my-comments/${type}/${commentId}`,
+		content,
+	);
 	return res.data;
 };
 
@@ -58,7 +70,8 @@ export const fetchUserPostById = async (type, postId) => {
 };
 
 // 2. 내가 쓴 글 수정
-export const updateUserPost = async (type, postId, payload = {}) => {  //API 다시 확인 (@RequsetBody 2개?)
+export const updateUserPost = async (type, postId, payload = {}) => {
+	//API 다시 확인 (@RequsetBody 2개?)
 	if (!type || postId == null) throw new Error("type과 postId가 필요합니다.");
 	const body = {
 		title: payload.title ?? null,
