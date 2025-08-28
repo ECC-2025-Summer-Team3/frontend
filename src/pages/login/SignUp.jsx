@@ -2,8 +2,6 @@ import React from "react";
 import {
 	PageWrapper,
 	Blank,
-	UploadButton,
-	ProfileWrapper,
 	InstText,
 	WidthWrapper,
 	InputText,
@@ -14,8 +12,6 @@ import {
 } from "../../styles/UserStyle.jsx";
 import certif_logo from "../../assets/certif_logo.png";
 import { useState } from "react";
-import { Avatar, Upload } from "antd";
-import { UserOutlined, EditOutlined } from "@ant-design/icons";
 import {
 	registerUser,
 	checkNickname,
@@ -33,7 +29,6 @@ function SignUp() {
 	const [isClicked, setIsClicked] = useState(false);
 	const [isClicked2, setIsClicked2] = useState(false);
 	const [checkEmailForm, setCheckEmailForm] = useState(null);
-	const [img, setImg] = useState(null);
 	const isEnabled =
 		isDuplicated == false &&
 		password.trim() != "" &&
@@ -45,28 +40,11 @@ function SignUp() {
 	const handleSignup = async (e) => {
 		e.preventDefault();
 		try {
-			const data = await registerUser(nickname, email, password);
-			console.log("회원가입 성공", data);
+			await registerUser(nickname, email, password);
 			navigate("/login");
 		} catch (err) {
 			console.log("회원가입 실패:", err.response?.data?.data || err);
 			alert(err.response?.data?.message || "회원가입 실패");
-		}
-		console.log(nickname, email, password);
-	};
-
-	const getBase64 = (file, callback) => {
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onload = () => callback(reader.result);
-	};
-
-	const handleChange = ({ fileList }) => {
-		const file = fileList[0]?.originFileObj;
-		if (file) {
-			getBase64(file, (url) => {
-				setImg(url);
-			});
 		}
 	};
 
@@ -93,18 +71,7 @@ function SignUp() {
 		<PageWrapper>
 			<img src={certif_logo} alt="Certif logo" width={"200px"} />
 			<Blank />
-			<ProfileWrapper>
-				<Avatar size={100} icon={!img && <UserOutlined />} src={img} />
-				<Upload
-					showUploadList={false}
-					beforeUpload={() => false} // 서버 업로드 안 하고 로컬 미리보기만
-					onChange={handleChange}
-				>
-					<UploadButton>
-						<EditOutlined />
-					</UploadButton>
-				</Upload>
-			</ProfileWrapper>
+
 			<Blank />
 			<InstText>닉네임</InstText>
 			<WidthWrapper>
