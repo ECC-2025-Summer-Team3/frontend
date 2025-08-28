@@ -12,25 +12,20 @@ import { Avatar, Upload } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
-import { fetchMyPage } from "../../services/UserService.js";
+import { fetchMyPage, updateProfileImg } from "../../services/UserService.js";
 
 function MyPage() {
 	const [img, setImg] = useState(null);
+	const [nickname, setNickname] = useState("");
 	const [email, setEmail] = useState("");
 	const navigate = useNavigate();
-
-	const getBase64 = (file, callback) => {
-		const reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onload = () => callback(reader.result);
-	};
 
 	const handleChange = ({ fileList }) => {
 		const file = fileList[0]?.originFileObj;
 		if (file) {
-			getBase64(file, (url) => {
-				setImg(url);
-			});
+			const previewUrl = URL.createObjectURL(file);
+			setImg(previewUrl);
+			updateImg(file);
 		}
 	};
 
@@ -39,12 +34,27 @@ function MyPage() {
 			try {
 				const data = await fetchMyPage();
 				setEmail(data.email);
+				setNickname(data.nickname);
 				setImg(data.profileImage);
 			} catch (e) {
 				console.error(e);
 			}
 		})();
 	}, []);
+
+	const updateImg = async (file) => {
+		try {
+			const formData = new FormData();
+			formData.append("image", file);
+			const res = await updateProfileImg(formData);
+
+			if (res.profile_image_url) {
+				setImg(res.profile_image_url);
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	};
 
 	return (
 		<PageWrapper>
@@ -60,7 +70,7 @@ function MyPage() {
 					</UploadButton>
 				</Upload>
 			</ProfileWrapper>
-			<NameText>user name</NameText>
+			<NameText>{nickname}</NameText>
 			<MyPageTitle>회원정보</MyPageTitle>
 			<MyPageText style={{ cursor: "default" }}>
 				아이디(이메일): {email}

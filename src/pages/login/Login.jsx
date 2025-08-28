@@ -1,11 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import "antd/dist/reset.css";
+import certif_logo from "../../assets/certif_logo.png";
 import { useNavigate } from "react-router-dom";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import {
 	PageWrapper,
-	Title,
 	LoginMessage,
 	InstText,
 	InputText,
@@ -13,8 +13,6 @@ import {
 	LoginButton,
 	LoginCheck,
 	WidthWrapper,
-	P1,
-	RightLinks,
 	Divide,
 	SignButton,
 } from "../../styles/UserStyle";
@@ -46,12 +44,9 @@ function Login() {
 				localStorage.setItem("password", Pw);
 			}
 			navigate("/home");
-			console.log("로그인 성공", data);
-		} catch (err) {
-			console.log("로그인 실패:", err);
+		} catch {
 			alert("로그인 실패");
 		}
-		console.log(Id, Pw);
 	};
 
 	const handleChecked = (e) => {
@@ -66,12 +61,11 @@ function Login() {
 			setId(localStorage.getItem("email") || "");
 			setPw(localStorage.getItem("password") || "");
 		}
-		console.log(Id, Pw);
 	}, []);
 
 	return (
 		<PageWrapper>
-			<Title>Certif</Title>
+			<img src={certif_logo} alt="Certif logo" width={"200px"} />
 			<Blank />
 			<LoginMessage>이메일과 비밀번호를</LoginMessage>
 			<LoginMessage>입력해주세요.</LoginMessage>
@@ -101,10 +95,6 @@ function Login() {
 				<LoginCheck type="checkbox" checked={checked} onChange={handleChecked}>
 					자동로그인
 				</LoginCheck>
-				<RightLinks>
-					<P1>계정 찾기</P1>
-					<P1>비밀번호 재설정</P1>
-				</RightLinks>
 			</WidthWrapper>
 			<Divide />
 			<WidthWrapper>
@@ -128,6 +118,7 @@ function Login() {
 								x
 							</CloseButton>
 							<Blank />
+
 							<Blank />
 							<p>안녕하세요.</p>
 							<Blank />

@@ -15,6 +15,16 @@ export const resetPassword = async (newPassword) => {
 	return res.data;
 };
 
+// 프로필 이미지 수정
+export const updateProfileImg = async (img) => {
+	const res = await http.patch("/user/profile-image", img, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
+	return res;
+};
+
 /* UserCommentService */
 
 // 1-1 내가 쓴 댓글 목록 조회

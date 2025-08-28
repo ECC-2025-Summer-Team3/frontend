@@ -128,7 +128,11 @@ const Header = () => {
 	return (
 		<Bar>
 			<Logo to="/" onMouseEnter={() => setOpen(false)}>
-				<img src={certif_logo} alt="Certif logo" />
+				<img
+					src={certif_logo}
+					alt="Certif logo"
+					onClick={() => navigate("/home")}
+				/>
 			</Logo>
 
 			<Nav>

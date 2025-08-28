@@ -32,7 +32,6 @@ function CertifiInfo() {
 				setCertificate(data);
 				setIsFavorited(data.favorited);
 				setSchedules(schedule);
-				console.log(schedule);
 			} catch (err) {
 				console.error(err);
 			}
@@ -76,7 +75,7 @@ function CertifiInfo() {
 			<InfoText>시험일정</InfoText>
 			{schedules.map((s) => (
 				<InfoContent key={s.scheduleId}>
-					{s.scheduleTypeName} : {s.stratDate} ~ {s.endDate}
+					{s.examSession} {s.scheduleTypeName} : {s.stratDate} ~ {s.endDate}
 				</InfoContent>
 			))}
 			<Blank />

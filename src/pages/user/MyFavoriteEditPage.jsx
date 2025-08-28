@@ -18,7 +18,6 @@ function MyFavoriteEditPage() {
 			try {
 				const data = await fetchFavorite();
 				const f = data.map((e) => ({ ...e, isFavorited: true }));
-				console.log(f);
 				setFavorites(f);
 			} catch (e) {
 				console.error(e);
@@ -42,7 +41,6 @@ function MyFavoriteEditPage() {
 				item.certificateId === id ? { ...item, isFavorited: true } : item,
 			),
 		);
-		console.log(favorites);
 	};
 
 	return (
@@ -50,7 +48,7 @@ function MyFavoriteEditPage() {
 			<Header>즐겨찾기 수정</Header>
 			<ContentBox>
 				<FormWrapper>
-					{Array.isArray(favorites) &&
+					{favorites.length > 0 ? (
 						favorites.map((f) => (
 							<FavoriteList key={f.certificateId}>
 								<FavoriteName>{f.certificateName}</FavoriteName>
@@ -62,7 +60,10 @@ function MyFavoriteEditPage() {
 									<EmptyStar onClick={() => handleEmptyStar(f.certificateId)} />
 								)}
 							</FavoriteList>
-						))}
+						))
+					) : (
+						<p>내가 즐겨찾기한 자격증이 없습니다.</p>
+					)}
 				</FormWrapper>
 			</ContentBox>
 		</PageWrapper>
