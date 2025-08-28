@@ -37,6 +37,7 @@ function ChangePw() {
 			<Blank />
 			<InstText>현재 비밀번호</InstText>
 			<InputText
+				type="password"
 				placeholder="현재 비밀번호를 입력해 주세요"
 				value={pw}
 				onChange={(e) => setPw(e.target.value)}
@@ -44,6 +45,7 @@ function ChangePw() {
 			<Blank />
 			<InstText>새 비밀번호</InstText>
 			<InputText
+				type="password"
 				placeholder="새 비밀번호를 입력해 주세요"
 				value={newPw}
 				onChange={(e) => setNewPw(e.target.value)}
@@ -51,6 +53,7 @@ function ChangePw() {
 			<Blank />
 			<InstText>새 비밀번호 확인</InstText>
 			<InputText
+				type="password"
 				placeholder="새 비밀번호를 입력해 주세요"
 				value={newPw2}
 				onChange={(e) => setNewPw2(e.target.value)}

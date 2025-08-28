@@ -7,16 +7,24 @@ const http = axios.create({
 	withCredentials: true,
 });
 
-const PUBLIC = ["/api/auth/signup", "/api/auth/login", "/api/auth/check-nickname"];
+const PUBLIC = [
+	"/api/auth/signup",
+	"/api/auth/login",
+	"/api/auth/check-nickname",
+];
 
 http.interceptors.request.use((c) => {
-  const full = `${(c.baseURL||'').replace(/\/$/,'')}/${(c.url||'').replace(/^\//,'')}`.split("?")[0];
-  const isPublic = PUBLIC.some(p => full === p || full.startsWith(p + "/"));
-  const h = c.headers || {};
-  const t = localStorage.getItem("token");
-  if (!isPublic && t) h.Authorization = `Bearer ${t}`; else delete h.Authorization;
-  c.headers = h;
-  return c;
+	const full =
+		`${(c.baseURL || "").replace(/\/$/, "")}/${(c.url || "").replace(/^\//, "")}`.split(
+			"?",
+		)[0];
+	const isPublic = PUBLIC.some((p) => full === p || full.startsWith(p + "/"));
+	const h = c.headers || {};
+	const t = localStorage.getItem("token");
+	if (!isPublic && t) h.Authorization = `Bearer ${t}`;
+	else delete h.Authorization;
+	c.headers = h;
+	return c;
 });
 
 export default http;

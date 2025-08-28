@@ -1,7 +1,6 @@
 import React from "react";
 import {
 	PageWrapper,
-	Title,
 	Blank,
 	UploadButton,
 	ProfileWrapper,
@@ -13,6 +12,7 @@ import {
 	RedMsg,
 	GreenMsg,
 } from "../../styles/UserStyle.jsx";
+import certif_logo from "../../assets/certif_logo.png";
 import { useState } from "react";
 import { Avatar, Upload } from "antd";
 import { UserOutlined, EditOutlined } from "@ant-design/icons";
@@ -74,7 +74,6 @@ function SignUp() {
 		try {
 			const data = await checkNickname(nickname);
 			setIsDuplicated(data.isDuplicate);
-			console.log(data.isDuplicate);
 		} catch (e) {
 			console.error(e);
 		}
@@ -84,15 +83,15 @@ function SignUp() {
 		try {
 			const data = await checkEmail(email);
 			setIsDuplicated2(data.isDuplicate);
-			console.log(data.isDuplicate);
+			console.log(data);
 		} catch (e) {
-			console.error(e);
+			console.error(e.response?.data || e.message);
 		}
 	};
 
 	return (
 		<PageWrapper>
-			<Title>Certif</Title>
+			<img src={certif_logo} alt="Certif logo" width={"200px"} />
 			<Blank />
 			<ProfileWrapper>
 				<Avatar size={100} icon={!img && <UserOutlined />} src={img} />
@@ -158,7 +157,7 @@ function SignUp() {
 				(isDuplicated2 ? (
 					<RedMsg>이미 사용중인 이메일입니다.</RedMsg>
 				) : (
-					<GreenMsg>사용 가능한 이메일입니다.</GreenMsg>
+					isDuplicated2(<GreenMsg>사용 가능한 이메일입니다.</GreenMsg>)
 				))}
 			<Blank />
 			<InstText>비밀번호</InstText>

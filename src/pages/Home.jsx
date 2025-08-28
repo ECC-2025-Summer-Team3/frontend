@@ -31,7 +31,6 @@ function Home() {
 				);
 				const data = certificates.flat();
 				setCertificateList(data);
-				console.log(data);
 			} catch (e) {
 				console.error(e);
 			}
@@ -52,7 +51,6 @@ function Home() {
 		);
 
 		setFilter(filtered);
-		console.log(filtered);
 	};
 
 	const handleDropDown = (id) => {
@@ -96,6 +94,8 @@ function Home() {
 export default Home;
 
 const DropDown = styled.ul`
+	display: flex;
+	flex-direction: column;
 	position: absolute;
 	top: 100%;
 	left: 0;
@@ -103,7 +103,9 @@ const DropDown = styled.ul`
 	padding: 0;
 	list-style: none;
 	border: 1px solid #ccc;
-	bottom-border-radius: 8px;
+	border-top: 0px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
 	background-color: white;
 	max-height: 200px;
 	overflow-y: auto;
@@ -113,8 +115,11 @@ const DropDown = styled.ul`
 const DropdownItem = styled.li`
 	padding: 10px;
 	cursor: pointer;
-
+	font-size: 12px;
 	&:hover {
 		background-color: #f2f2f2;
+	}
+	&:last-child {
+		border-bottom: none;
 	}
 `;
